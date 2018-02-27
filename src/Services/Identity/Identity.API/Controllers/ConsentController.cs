@@ -1,13 +1,13 @@
-﻿using IdentityServer4.Models;
+﻿using System.Linq;
+using System.Threading.Tasks;
+using Identity.API.Models.AccountViewModels;
+using IdentityServer4.Models;
 using IdentityServer4.Services;
 using IdentityServer4.Stores;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.eShopOnContainers.Services.Identity.API.Models.AccountViewModels;
 using Microsoft.Extensions.Logging;
-using System.Linq;
-using System.Threading.Tasks;
 
-namespace Microsoft.eShopOnContainers.Services.Identity.API.Controllers
+namespace Identity.API.Controllers
 {
     /// <summary>
     /// This controller implements the consent logic
@@ -40,14 +40,14 @@ namespace Microsoft.eShopOnContainers.Services.Identity.API.Controllers
         [HttpGet]
         public async Task<IActionResult> Index(string returnUrl)
         {
-            var vm = await BuildViewModelAsync(returnUrl);
-            ViewData["ReturnUrl"] = returnUrl;
+            var vm = await this.BuildViewModelAsync(returnUrl);
+            this.ViewData["ReturnUrl"] = returnUrl;
             if (vm != null)
             {
-                return View("Index", vm);
+                return this.View("Index", vm);
             }
 
-            return View("Error");
+            return this.View("Error");
         }
 
         /// <summary>
@@ -80,30 +80,30 @@ namespace Microsoft.eShopOnContainers.Services.Identity.API.Controllers
                 }
                 else
                 {
-                    ModelState.AddModelError("", "You must pick at least one permission.");
+                    this.ModelState.AddModelError("", "You must pick at least one permission.");
                 }
             }
             else
             {
-                ModelState.AddModelError("", "Invalid Selection");
+                this.ModelState.AddModelError("", "Invalid Selection");
             }
 
             if (response != null)
             {
-                // communicate outcome of consent back to identityserver
+              // communicate outcome of consent back to identityserver
                 await _interaction.GrantConsentAsync(request, response);
 
                 // redirect back to authorization endpoint
-                return Redirect(model.ReturnUrl);
+                return this.Redirect(model.ReturnUrl);
             }
 
-            var vm = await BuildViewModelAsync(model.ReturnUrl, model);
+            var vm = await this.BuildViewModelAsync(model.ReturnUrl, model);
             if (vm != null)
             {
-                return View("Index", vm);
+                return this.View("Index", vm);
             }
 
-            return View("Error");
+            return this.View("Error");
         }
 
         async Task<ConsentViewModel> BuildViewModelAsync(string returnUrl, ConsentInputModel model = null)

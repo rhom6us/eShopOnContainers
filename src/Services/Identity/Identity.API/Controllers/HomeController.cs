@@ -1,12 +1,12 @@
-﻿
+﻿using System.Threading.Tasks;
+using Identity.API.Models;
 using IdentityServer4.Services;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.eShopOnContainers.Services.Identity.API.Models;
+using Microsoft.eShopOnContainers.Services.Identity.API;
 using Microsoft.eShopOnContainers.Services.Identity.API.Services;
 using Microsoft.Extensions.Options;
-using System.Threading.Tasks;
 
-namespace Microsoft.eShopOnContainers.Services.Identity.API.Controllers
+namespace Identity.API.Controllers
 {
     public class HomeController : Controller
     {
@@ -23,15 +23,15 @@ namespace Microsoft.eShopOnContainers.Services.Identity.API.Controllers
 
         public IActionResult Index(string returnUrl)
         {
-            return View();
+            return this.View();
         }
 
         public IActionResult ReturnToOriginalApplication(string returnUrl)
         {
             if (returnUrl != null)
-                return Redirect(_redirectSvc.ExtractRedirectUriFromReturnUrl(returnUrl));
+                return this.Redirect(_redirectSvc.ExtractRedirectUriFromReturnUrl(returnUrl));
             else
-                return RedirectToAction("Index", "Home");
+                return this.RedirectToAction("Index", "Home");
         }
 
         /// <summary>
@@ -48,7 +48,7 @@ namespace Microsoft.eShopOnContainers.Services.Identity.API.Controllers
                 vm.Error = message;
             }
 
-            return View("Error", vm);
+            return this.View("Error", vm);
         }
     }
 }

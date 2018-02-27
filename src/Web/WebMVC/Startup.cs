@@ -52,6 +52,8 @@ namespace Microsoft.eShopOnContainers.WebMVC
 
             services.Configure<AppSettings>(Configuration);
 
+            #region HealthChecks
+
             services.AddHealthChecks(checks =>
             {
                 var minutes = 1;
@@ -66,7 +68,9 @@ namespace Microsoft.eShopOnContainers.WebMVC
                 checks.AddUrlCheck(Configuration["IdentityUrlHC"], TimeSpan.FromMinutes(minutes));
                 checks.AddUrlCheck(Configuration["MarketingUrlHC"], TimeSpan.FromMinutes(minutes));
             });
+            
 
+            #endregion
             // Add application services.
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
             services.AddTransient<ICatalogService, CatalogService>();
@@ -75,6 +79,8 @@ namespace Microsoft.eShopOnContainers.WebMVC
             services.AddTransient<ICampaignService, CampaignService>();
             services.AddTransient<ILocationService, LocationService>();
             services.AddTransient<IIdentityParser<ApplicationUser>, IdentityParser>();
+
+            #region Resilience
 
             if (Configuration.GetValue<string>("UseResilientHttp") == bool.TrueString)
             {
@@ -103,34 +109,46 @@ namespace Microsoft.eShopOnContainers.WebMVC
             {
                 services.AddSingleton<IHttpClient, StandardHttpClient>();
             }
+            
+
+            #endregion
+
             var useLoadTest = Configuration.GetValue<bool>("UseLoadTest");
             var identityUrl = Configuration.GetValue<string>("IdentityUrl");
             var callBackUrl = Configuration.GetValue<string>("CallBackUrl");
             
             // Add Authentication services          
-            
+
+            #region Oidc Client
+
+          
+
             services.AddAuthentication(options => {
-                options.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;
-                options.DefaultChallengeScheme = OpenIdConnectDefaults.AuthenticationScheme;
-            })
-            .AddCookie()
-            .AddOpenIdConnect(options => {
-                options.SignInScheme = CookieAuthenticationDefaults.AuthenticationScheme;
-                options.Authority = identityUrl.ToString();
-                options.SignedOutRedirectUri = callBackUrl.ToString();
-                options.ClientId = useLoadTest ? "mvctest" : "mvc";
-                options.ClientSecret = "secret";
-                options.ResponseType = useLoadTest ? "code id_token token" : "code id_token";
-                options.SaveTokens = true;
-                options.GetClaimsFromUserInfoEndpoint = true;
-                options.RequireHttpsMetadata = false;
-                options.Scope.Add("openid");
-                options.Scope.Add("profile");
-                options.Scope.Add("orders");
-                options.Scope.Add("basket");
-                options.Scope.Add("marketing");
-                options.Scope.Add("locations");
-            });
+                        options.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+                        options.DefaultChallengeScheme = OpenIdConnectDefaults.AuthenticationScheme;
+                    })
+                    .AddCookie()
+                    
+                    .AddOpenIdConnect(options => {
+                        options.SignInScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+                        options.Authority = identityUrl.ToString();
+                        options.SignedOutRedirectUri = callBackUrl.ToString();
+                        options.ClientId = useLoadTest ? "mvctest" : "mvc";
+                        options.ClientSecret = "secret";
+                        options.ResponseType = useLoadTest ? "code id_token token" : "code id_token";
+                        options.SaveTokens = true;
+                        options.GetClaimsFromUserInfoEndpoint = true;
+                        options.RequireHttpsMetadata = false;
+                        options.Scope.Add("openid");
+                        options.Scope.Add("profile");
+                        options.Scope.Add("orders");
+                        options.Scope.Add("basket");
+                        options.Scope.Add("marketing");
+                        options.Scope.Add("locations");
+                        //options.Scope.Add("offline_access");
+                    });
+
+            #endregion
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -184,6 +202,7 @@ namespace Microsoft.eShopOnContainers.WebMVC
                 routes.MapRoute(
                     name: "default",
                     template: "{controller=Catalog}/{action=Index}/{id?}");
+                    //template: "{controller=Account}/{action=SignIn}/{redirect?}");
 
                 routes.MapRoute(
                     name: "defaultError",

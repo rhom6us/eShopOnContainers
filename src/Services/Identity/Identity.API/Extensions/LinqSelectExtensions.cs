@@ -1,50 +1,54 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using JetBrains.Annotations;
 
-namespace Microsoft.eShopOnContainers.Services.Identity.API.Extensions
-{
-    public static class LinqSelectExtensions
-    {
-        public static IEnumerable<SelectTryResult<TSource, TResult>> SelectTry<TSource, TResult>(this IEnumerable<TSource> enumerable, Func<TSource, TResult> selector)
+namespace Microsoft.eShopOnContainers.Services.Identity.API.Extensions {
+    public static class LinqSelectExtensions {
+        public static IEnumerable<ISelectTryResult<TSource, TResult>> SelectTry<TSource, TResult>(this IEnumerable<TSource> source, Func<TSource, TResult> selector) {
+
+            return source.Select(
+                element => {
+                    try {
+                        return new SelectTryResult<TSource, TResult>(element, selector(element));
+                    }
+                    catch (Exception ex) {
+                        return new SelectTryResult<TSource, TResult>(element, ex);
+                    }
+                });
+
+        }
+
+        public static IEnumerable<TResult> Switch<TSource, TOperand, TResult>([NotNull]this IEnumerable<TSource> source, Func<TSource, TOperand> operandSelector, IDictionary<TOperand, Func<TSource,TResult>> branches) {
+            return source.Select(item => branches[operandSelector(item)](item));
+            
+        }
+
+        public static IEnumerable<TResult> OnCaughtException<TSource, TResult>(this IEnumerable<ISelectTryResult<TSource, TResult>> source, Func<Exception, TResult> exceptionHandler) {
+            return OnCaughtException(source, (s, ex) => exceptionHandler(ex));
+        }
+
+        public static IEnumerable<TResult> OnCaughtException<TSource, TResult>(this IEnumerable<ISelectTryResult<TSource, TResult>> source, Func<TSource, Exception,  TResult> exceptionHandler) {
+            return source.Select(x => x.CaughtException == null ? x.Result : exceptionHandler(x.Source, x.CaughtException));
+        }
+
+        private class SelectTryResult<TSource, TResult> : ISelectTryResult<TSource, TResult>
         {
-            foreach (TSource element in enumerable)
-            {
-                SelectTryResult<TSource, TResult> returnedValue;
-                try
-                {
-                    returnedValue = new SelectTryResult<TSource, TResult>(element, selector(element), null);
-                }
-                catch (Exception ex)
-                {
-                    returnedValue = new SelectTryResult<TSource, TResult>(element, default(TResult), ex);
-                }
-                yield return returnedValue;
+            public TSource Source { get; }
+            public TResult Result { get; } = default(TResult);
+            public Exception CaughtException { get; } = null;
+
+            private SelectTryResult(TSource source) {
+                this.Source = source;
+
             }
-        }
 
-        public static IEnumerable<TResult> OnCaughtException<TSource, TResult>(this IEnumerable<SelectTryResult<TSource, TResult>> enumerable, Func<Exception, TResult> exceptionHandler)
-        {
-            return enumerable.Select(x => x.CaughtException == null ? x.Result : exceptionHandler(x.CaughtException));
-        }
-
-        public static IEnumerable<TResult> OnCaughtException<TSource, TResult>(this IEnumerable<SelectTryResult<TSource, TResult>> enumerable, Func<TSource, Exception, TResult> exceptionHandler)
-        {
-            return enumerable.Select(x => x.CaughtException == null ? x.Result : exceptionHandler(x.Source, x.CaughtException));
-        }
-
-        public class SelectTryResult<TSource, TResult>
-        {
-            internal SelectTryResult(TSource source, TResult result, Exception exception)
-            {
-                Source = source;
-                Result = result;
-                CaughtException = exception;
+            internal SelectTryResult(TSource source, Exception exception) : this(source) {
+                this.CaughtException = exception;
             }
-
-            public TSource Source { get; private set; }
-            public TResult Result { get; private set; }
-            public Exception CaughtException { get; private set; }
+            internal SelectTryResult(TSource source, TResult result): this(source) {
+                this.Result = result;
+            }
         }
     }
 }

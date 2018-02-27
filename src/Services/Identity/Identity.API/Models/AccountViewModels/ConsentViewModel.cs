@@ -1,27 +1,25 @@
-﻿
-
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using IdentityServer4.Models;
 
-namespace Microsoft.eShopOnContainers.Services.Identity.API.Models.AccountViewModels
+namespace Identity.API.Models.AccountViewModels
 {
     public class ConsentViewModel : ConsentInputModel
     {
         public ConsentViewModel(ConsentInputModel model, string returnUrl, AuthorizationRequest request, Client client, Resources resources)
         {
-            RememberConsent = model?.RememberConsent ?? true;
-            ScopesConsented = model?.ScopesConsented ?? Enumerable.Empty<string>();
+            this.RememberConsent = model?.RememberConsent ?? true;
+            this.ScopesConsented = model?.ScopesConsented ?? Enumerable.Empty<string>();
 
-            ReturnUrl = returnUrl;
+            this.ReturnUrl = returnUrl;
 
-            ClientName = client.ClientName;
-            ClientUrl = client.ClientUri;
-            ClientLogoUrl = client.LogoUri;
-            AllowRememberConsent = client.AllowRememberConsent;
+            this.ClientName = client.ClientName;
+            this.ClientUrl = client.ClientUri;
+            this.ClientLogoUrl = client.LogoUri;
+            this.AllowRememberConsent = client.AllowRememberConsent;
 
-            IdentityScopes = resources.IdentityResources.Select(x => new ScopeViewModel(x, ScopesConsented.Contains(x.Name) || model == null)).ToArray();
-            ResourceScopes = resources.ApiResources.SelectMany(x => x.Scopes).Select(x => new ScopeViewModel(x, ScopesConsented.Contains(x.Name) || model == null)).ToArray();
+            this.IdentityScopes = resources.IdentityResources.Select(x => new ScopeViewModel(x, this.ScopesConsented.Contains(x.Name) || model == null)).ToArray();
+            this.ResourceScopes = resources.ApiResources.SelectMany(x => x.Scopes).Select(x => new ScopeViewModel(x, this.ScopesConsented.Contains(x.Name) || model == null)).ToArray();
         }
 
         public string ClientName { get; set; }
@@ -37,22 +35,22 @@ namespace Microsoft.eShopOnContainers.Services.Identity.API.Models.AccountViewMo
     {
         public ScopeViewModel(Scope scope, bool check)
         {
-            Name = scope.Name;
-            DisplayName = scope.DisplayName;
-            Description = scope.Description;
-            Emphasize = scope.Emphasize;
-            Required = scope.Required;
-            Checked = check || scope.Required;
+            this.Name = scope.Name;
+            this.DisplayName = scope.DisplayName;
+            this.Description = scope.Description;
+            this.Emphasize = scope.Emphasize;
+            this.Required = scope.Required;
+            this.Checked = check || scope.Required;
         }
 
         public ScopeViewModel(IdentityResource identity, bool check)
         {
-            Name = identity.Name;
-            DisplayName = identity.DisplayName;
-            Description = identity.Description;
-            Emphasize = identity.Emphasize;
-            Required = identity.Required;
-            Checked = check || identity.Required;
+            this.Name = identity.Name;
+            this.DisplayName = identity.DisplayName;
+            this.Description = identity.Description;
+            this.Emphasize = identity.Emphasize;
+            this.Required = identity.Required;
+            this.Checked = check || identity.Required;
         }
 
         public string Name { get; set; }

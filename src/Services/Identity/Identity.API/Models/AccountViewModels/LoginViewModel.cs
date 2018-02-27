@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace Microsoft.eShopOnContainers.Services.Identity.API.Models.AccountViewModels
+namespace Identity.API.Models.AccountViewModels
 {
     public class LoginViewModel
     {
@@ -14,6 +14,7 @@ namespace Microsoft.eShopOnContainers.Services.Identity.API.Models.AccountViewMo
 
         [Display(Name = "Remember me?")]
         public bool RememberMe { get; set; }
+
         public string ReturnUrl { get; set; }
     }
 }

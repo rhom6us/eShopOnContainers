@@ -1,6 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using Identity.API.Data;
 
-namespace Microsoft.eShopOnContainers.Services.Identity.API.Models.AccountViewModels
+namespace Identity.API.Models.AccountViewModels
 {
     public class RegisterViewModel
     {
