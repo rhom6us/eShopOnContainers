@@ -67,7 +67,7 @@
                 var accountKey = Configuration.GetValue<string>("AzureStorageAccountKey");
                 if (!string.IsNullOrEmpty(accountName) && !string.IsNullOrEmpty(accountKey))
                 {
-                    checks.AddAzureBlobStorageCheck(accountName, accountKey);
+                    checks.AddAzureBlobStorageCheck( accountName, accountKey);
                 }
             });
 
