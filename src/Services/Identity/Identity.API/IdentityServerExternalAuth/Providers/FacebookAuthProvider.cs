@@ -35,10 +35,11 @@ namespace IdentityServerExternalAuth.Providers
                 throw new ArgumentNullException(nameof(this.Provider));
             }
 
-            var request = new Dictionary<string, string>();
+            var request = new Dictionary<string, string> {
+                ["fields"] = "id,email,name,gender,birthday",
+                ["access_token"] = accessToken
+            };
 
-            request.Add("fields", "id,email,name,gender,birthday");
-            request.Add("access_token", accessToken);
 
             var result = _httpClient.GetAsync(this.Provider.UserInfoEndPoint + QueryBuilder.GetQuery(request, ProviderType.Facebook)).Result;
             if (result.IsSuccessStatusCode)

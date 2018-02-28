@@ -7,54 +7,56 @@ using IdentityServerExternalAuth.Helpers;
 using IdentityServerExternalAuth.Interfaces;
 using IdentityServerExternalAuth.Interfaces.Processors;
 using IdentityServerExternalAuth.Repositories.Interfaces;
+using JetBrains.Annotations;
 using Microsoft.AspNetCore.Identity;
 
 namespace IdentityServerExternalAuth.ExtensionGrant
 {
     public class ExternalAuthenticationGrant<TUser> : IExtensionGrantValidator where TUser : IdentityUser, new()
     {
+        [NotNull]
         private readonly UserManager<TUser> _userManager;
+
+        [NotNull]
         private readonly IProviderRepository _providerRepository;
-        private readonly IFacebookAuthProvider _facebookAuthProvider;
+
+        [NotNull]
+        private readonly INonEmailUserProcessor _nonEmailUserProcessor;
+
+        [NotNull]
+        private readonly IEmailUserProcessor _emailUserProcessor;
+
         // private readonly IGoogleAuthProvider _googleAuthProvider;
-        private readonly ITwitterAuthProvider _twitterAuthProvider;
         //private readonly ILinkedInAuthProvider _linkedAuthProvider;
         // private readonly IGitHubAuthProvider _githubAuthProvider;
-        private readonly INonEmailUserProcessor _nonEmailUserProcessor;
-        private readonly IEmailUserProcessor _emailUserProcessor;
         public ExternalAuthenticationGrant(
-            UserManager<TUser> userManager,
-            IProviderRepository providerRepository,
-            IFacebookAuthProvider facebookAuthProvider,
+            [NotNull] UserManager<TUser> userManager,
+            [NotNull] IProviderRepository providerRepository,
+            [NotNull] IFacebookAuthProvider facebookAuthProvider,
             //  IGoogleAuthProvider googleAuthProvider,
-            ITwitterAuthProvider twitterAuthProvider,
-            //  ILinkedInAuthProvider linkeInAuthProvider,
-            //  IGitHubAuthProvider githubAuthProvider,
-            INonEmailUserProcessor nonEmailUserProcessor,
-            IEmailUserProcessor emailUserProcessor
-        )
-        {
-            _userManager = userManager ?? throw new ArgumentNullException(nameof(userManager));
-            _providerRepository = providerRepository ?? throw new ArgumentNullException(nameof(providerRepository));
-            _facebookAuthProvider = facebookAuthProvider ?? throw new ArgumentNullException(nameof(facebookAuthProvider));
-            //_googleAuthProvider = googleAuthProvider ?? throw new ArgumentNullException(nameof(googleAuthProvider));
-            _twitterAuthProvider = twitterAuthProvider ?? throw new ArgumentNullException(nameof(twitterAuthProvider));
-            //_linkedAuthProvider = linkeInAuthProvider ?? throw new ArgumentNullException(nameof(linkeInAuthProvider));
-            //_githubAuthProvider = githubAuthProvider ?? throw new ArgumentNullException(nameof(githubAuthProvider));
-            _nonEmailUserProcessor = nonEmailUserProcessor ?? throw new ArgumentNullException(nameof(nonEmailUserProcessor));
-            _emailUserProcessor = emailUserProcessor ?? throw new ArgumentNullException(nameof(nonEmailUserProcessor));
+            [NotNull] ITwitterAuthProvider twitterAuthProvider,
+             //  ILinkedInAuthProvider linkeInAuthProvider,
+             //  IGitHubAuthProvider githubAuthProvider,
+            [NotNull] INonEmailUserProcessor nonEmailUserProcessor,
+            [NotNull] IEmailUserProcessor emailUserProcessor
+        ) {
+            _userManager = userManager;
+            _providerRepository = providerRepository;
+            _nonEmailUserProcessor = nonEmailUserProcessor;
+            _emailUserProcessor = emailUserProcessor;
+
 
             _providers = new Dictionary<ProviderType, IExternalAuthProvider>
             {
-                {ProviderType.Facebook, _facebookAuthProvider},
-                //   {ProviderType.Google, _googleAuthProvider},
-                {ProviderType.Twitter, _twitterAuthProvider},
-                //  {ProviderType.LinkedIn, _linkedAuthProvider}
+                [ProviderType.Facebook] = facebookAuthProvider,
+                // [ProviderType.Google] = _googleAuthProvider,
+                [ProviderType.Twitter] = twitterAuthProvider,
+                //[ProviderType.LinkedIn] = _linkedAuthProvider
             };
         }
 
 
-        private Dictionary<ProviderType, IExternalAuthProvider> _providers;
+        private readonly Dictionary<ProviderType, IExternalAuthProvider> _providers;
 
         public string GrantType => "external";
 
