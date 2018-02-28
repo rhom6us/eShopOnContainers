@@ -38,6 +38,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "eShopOnContainers.UnitTests
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "eShopOnContainers.Core", "src\Mobile\eShopOnContainers\eShopOnContainers.Core\eShopOnContainers.Core.csproj", "{76C5F2A7-6CD5-49EA-9F33-EC44DE6539C7}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Shared", "Shared", "{8D9FEBFC-E704-4A6A-A8CB-10902DD6629E}"
+	ProjectSection(SolutionItems) = preProject
+		src\Shared\Guards.cs = src\Shared\Guards.cs
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Ad-Hoc|Any CPU = Ad-Hoc|Any CPU
@@ -517,6 +522,7 @@ Global
 		{A7337243-33B8-463A-87AD-944B75EFD820} = {B7B1D395-4E06-4036-BE86-C216756B9367}
 		{FDD910BC-DF0F-483D-B7D5-C7D831855172} = {B7B1D395-4E06-4036-BE86-C216756B9367}
 		{76C5F2A7-6CD5-49EA-9F33-EC44DE6539C7} = {778289CA-31F7-4464-8C2A-612EE846F8A7}
+		{8D9FEBFC-E704-4A6A-A8CB-10902DD6629E} = {932D8224-11F6-4D07-B109-DA28AD288A63}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {8A9E878A-C296-4615-97AB-7A4505148872}

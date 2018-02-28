@@ -10,7 +10,6 @@ using FFImageLoading.Forms.Droid;
 using System;
 using Xamarin.Forms.Platform.Android;
 using eShopOnContainers.Droid.Services;
-using Xamarin.Facebook;
 
 namespace eShopOnContainers.Droid.Activities
 {
@@ -27,7 +26,7 @@ namespace eShopOnContainers.Droid.Activities
             FormsAppCompatActivity.TabLayoutResource = Resource.Layout.Tabs;
 
             base.OnCreate(bundle);
-            FacebookSdk.SdkInitialize(this);
+            Xamarin.Facebook.FacebookSdk.SdkInitialize(ApplicationContext);
             SupportActionBar.SetDisplayShowHomeEnabled(true); // Show or hide the default home button
             SupportActionBar.SetDisplayHomeAsUpEnabled(true);
             SupportActionBar.SetDisplayShowCustomEnabled(true); // Enable overriding the default toolbar layout

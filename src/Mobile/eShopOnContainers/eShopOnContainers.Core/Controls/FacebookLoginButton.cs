@@ -9,6 +9,17 @@ namespace eShopOnContainers.Core.Controls
 {
     public class FacebookLoginButton : Button, IFacebookLoginButtonController
     {
+        public FacebookLoginButton() {
+            this.Text = "Sign in with Facebook";
+            var facebookBackground = Color.FromHsla(147 / 255d, 106 / 255d, 99 / 255d);
+            var foursquareBackground = Color.FromHsla(134/255d, 240 / 255d, 86 / 255d);
+            var twitterbackground = Color.FromHsla(131 / 255d, 240 / 255d, 114 / 255d);
+            var instagramBackground = Color.FromHsla(138 / 255d, 101 / 255d, 103 / 255d);
+            var googlebackground = Color.FromHsla(4/ 255d, 170 / 255d, 131 / 255d);
+            this.BackgroundColor = facebookBackground;
+            this.TextColor = Color.White;
+            
+        }
         public static readonly BindableProperty SignInCommandProperty = BindableProperty.Create(nameof(SignInCommand), typeof(ICommand), typeof(FacebookLoginButton));
         public static readonly BindableProperty AccessTokenProperty =
             BindableProperty.Create("AccessToken", typeof(string), typeof(FacebookLoginButton));

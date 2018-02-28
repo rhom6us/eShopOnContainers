@@ -63,6 +63,9 @@
     <AndroidLinkMode>SdkOnly</AndroidLinkMode>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="JetBrains.Annotations, Version=11.1.0.0, Culture=neutral, PublicKeyToken=1010a0d8d6380325, processorArchitecture=MSIL">
+      <HintPath>..\..\..\..\packages\JetBrains.Annotations.11.1.0\lib\netstandard1.0\JetBrains.Annotations.dll</HintPath>
+    </Reference>
     <Reference Include="Mono.Android" />
     <Reference Include="mscorlib" />
     <Reference Include="System" />
@@ -206,15 +209,20 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Activities\FacebookActivity.cs" />
+    <Compile Include="..\..\..\Shared\Guards.cs">
+      <Link>Properties\Guards.cs</Link>
+    </Compile>
     <Compile Include="Activities\MainActivity.cs" />
     <Compile Include="Effects\EntryLineColorEffect.cs" />
+    <Compile Include="Extensions\FacebookSdkExtensions.cs" />
     <Compile Include="Extensions\ViewExtensions.cs" />
     <Compile Include="MainApplication.cs" />
+    <Compile Include="Extensions\ActivityExtensions.cs" />
     <Compile Include="Renderers\BadgeView.cs" />
     <Compile Include="Renderers\CustomNavigationPageRenderer.cs" />
     <Compile Include="Renderers\CustomTabbedPageRenderer.cs" />
-    <Compile Include="Renderers\FacebookLoginButtonRendererAndroid.cs" />
+    <Compile Include="Renderers\FacebookLoginButtonRenderer.cs" />
+    <Compile Include="Renderers\FacebookLoginButtonRenderer.FacebookLoginActivity.cs" />
     <Compile Include="Renderers\SlideDownMenuPageRenderer.cs" />
     <Compile Include="Resources\Resource.Designer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -379,7 +387,9 @@
       <Name>eShopOnContainers.Core</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <AndroidResource Include="Resources\drawable\SocialLogin.png" />
+  </ItemGroup>
   <ItemGroup>
     <AndroidResource Include="Resources\values\Strings.xml">
       <SubType>Designer</SubType>
