@@ -21,11 +21,11 @@ namespace eShopOnContainers.Core.Services.Marketing
 
         public async Task<ObservableCollection<CampaignItem>> GetAllCampaignsAsync(string token)
         {
-            UriBuilder builder = new UriBuilder(GlobalSetting.Instance.MarketingEndpoint);
+            var builder = new UriBuilder(GlobalSetting.Instance.MarketingEndpoint);
             builder.Path = "api/v1/campaigns/user";
-            string uri = builder.ToString();
+            var uri = builder.ToString();
 
-            CampaignRoot campaign = await _requestProvider.GetAsync<CampaignRoot>(uri, token);
+            var campaign = await _requestProvider.GetAsync<CampaignRoot>(uri, token);
 
             if (campaign?.Data != null)
             {
@@ -38,9 +38,9 @@ namespace eShopOnContainers.Core.Services.Marketing
 
         public async Task<CampaignItem> GetCampaignByIdAsync(int campaignId, string token)
         {
-            UriBuilder builder = new UriBuilder(GlobalSetting.Instance.MarketingEndpoint);
+            var builder = new UriBuilder(GlobalSetting.Instance.MarketingEndpoint);
             builder.Path = $"api/v1/campaigns/{campaignId}";
-            string uri = builder.ToString();
+            var uri = builder.ToString();
             return await _requestProvider.GetAsync<CampaignItem>(uri, token);
         }
     }

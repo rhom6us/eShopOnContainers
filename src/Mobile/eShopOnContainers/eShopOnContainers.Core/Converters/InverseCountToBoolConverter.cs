@@ -10,7 +10,7 @@ namespace eShopOnContainers.Core.Converters
         {
             if (value is int)
             {
-                int count = System.Convert.ToInt32(value);
+                var count = System.Convert.ToInt32(value);
 
                 return count == 0;
             }

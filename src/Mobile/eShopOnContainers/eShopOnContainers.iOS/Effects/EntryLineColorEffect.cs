@@ -58,7 +58,7 @@ namespace eShopOnContainers.iOS.Effects
 
         private void UpdateLineColor()
         {
-            BorderLineLayer lineLayer = control.Layer.Sublayers.OfType<BorderLineLayer>()
+            var lineLayer = control.Layer.Sublayers.OfType<BorderLineLayer>()
                                                              .FirstOrDefault();
 
             if (lineLayer == null)

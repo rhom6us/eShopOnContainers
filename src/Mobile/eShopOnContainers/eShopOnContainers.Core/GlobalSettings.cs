@@ -15,14 +15,11 @@
             BaseEndpoint = DefaultEndpoint;
         }
 
-        public static GlobalSetting Instance
-        {
-            get { return _instance; }
-        }
+        public static GlobalSetting Instance => _instance;
 
         public string BaseEndpoint
         {
-            get { return _baseEndpoint; }
+            get => _baseEndpoint;
             set
             {
                 _baseEndpoint = value;
@@ -30,9 +27,9 @@
             }
         }
 
-        public string ClientId { get { return "xamarin"; }}
+        public string ClientId => "xamarin";
 
-        public string ClientSecret { get { return "secret"; }}
+        public string ClientSecret => "secret";
 
         public string AuthToken { get; set; }
 

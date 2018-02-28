@@ -42,7 +42,7 @@ namespace eShopOnContainers.Core.Behaviors
                 return;
             }
 
-            bool hasLine = (bool)newValue;
+            var hasLine = (bool)newValue;
 
             if (hasLine)
             {

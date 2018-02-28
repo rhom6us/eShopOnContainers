@@ -8,6 +8,7 @@ using System;
 using System.Diagnostics;
 using System.Globalization;
 using System.Threading.Tasks;
+using eShopOnContainers.Core.Controls;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
 
@@ -17,6 +18,12 @@ namespace eShopOnContainers
     public partial class App : Application
     {
         ISettingsService _settingsService;
+        //public static Action<string> PostSuccessFacebookAction { get; set; } = p => { };
+
+        public static void PostSuccessFacebookAction(string token) {
+            App.FbLoginButton.SignInCommand.Execute(token);
+        }
+        public static FacebookLoginButton FbLoginButton { get; set; }
 
         public App()
         {

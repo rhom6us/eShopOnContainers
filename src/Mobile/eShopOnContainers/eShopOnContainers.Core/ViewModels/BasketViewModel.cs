@@ -34,7 +34,7 @@ namespace eShopOnContainers.Core.ViewModels
 
         public int BadgeCount
         {
-            get { return _badgeCount; }
+            get => _badgeCount;
             set
             {
                 _badgeCount = value;
@@ -44,7 +44,7 @@ namespace eShopOnContainers.Core.ViewModels
 
         public ObservableCollection<BasketItem> BasketItems
         {
-            get { return _basketItems; }
+            get => _basketItems;
             set
             {
                 _basketItems = value;
@@ -54,7 +54,7 @@ namespace eShopOnContainers.Core.ViewModels
 
         public decimal Total
         {
-            get { return _total; }
+            get => _total;
             set
             {
                 _total = value;

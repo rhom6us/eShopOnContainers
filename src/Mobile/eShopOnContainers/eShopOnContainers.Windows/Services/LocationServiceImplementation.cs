@@ -49,7 +49,7 @@ namespace eShopOnContainers.Windows.Services
 
         public double DesiredAccuracy
         {
-            get { return _desiredAccuracy; }
+            get => _desiredAccuracy;
             set
             {
                 _desiredAccuracy = value;

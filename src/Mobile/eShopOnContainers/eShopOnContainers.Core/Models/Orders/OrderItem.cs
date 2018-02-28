@@ -21,7 +21,7 @@ namespace eShopOnContainers.Core.Models.Orders
         public int Quantity { get; set; }
 
         public decimal Discount { get; set; }
-        public decimal Total { get { return Quantity * UnitPrice; } }
+        public decimal Total => Quantity * UnitPrice;
 
         public override string ToString()
         {

@@ -13,7 +13,7 @@ namespace eShopOnContainers.Core.Helpers
         private static string ByteArrayToString(byte[] array)
         {
             var hex = new StringBuilder(array.Length * 2);
-            foreach (byte b in array)
+            foreach (var b in array)
             {
                 hex.AppendFormat("{0:x2}", b);
             }

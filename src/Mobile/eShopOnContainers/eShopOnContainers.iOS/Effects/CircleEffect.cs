@@ -33,15 +33,15 @@ namespace eShopOnContainers.iOS.Effects
 
         private void UpdateCircle()
         {
-            double width = ((VisualElement)Element).Width;
-            double height = ((VisualElement)Element).Height;
+            var width = ((VisualElement)Element).Width;
+            var height = ((VisualElement)Element).Height;
 
             if (width <= 0 || height <= 0)
             {
                 return;
             }
 
-            double min = Math.Min(width, height);
+            var min = Math.Min(width, height);
             var layerX = width > min ? (width - min) / 2 : 0;
             var layerY = height > min ? (height - min) / 2 : 0;
 

@@ -154,7 +154,7 @@ namespace eShopOnContainers.Droid.Services
                 return Task.FromResult(PermissionStatus.Unknown);
             }
 
-            bool targetsMOrHigher = context.ApplicationInfo.TargetSdkVersion >= Android.OS.BuildVersionCodes.M;
+            var targetsMOrHigher = context.ApplicationInfo.TargetSdkVersion >= Android.OS.BuildVersionCodes.M;
             foreach (var name in names)
             {
                 if (targetsMOrHigher)

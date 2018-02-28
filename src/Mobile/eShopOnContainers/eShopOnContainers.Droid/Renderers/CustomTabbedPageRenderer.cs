@@ -68,13 +68,13 @@ namespace eShopOnContainers.Droid.Renderers
         {
             try
             {
-                int id = Resources.GetIdentifier(name, "drawable", Context.PackageName);
+                var id = Resources.GetIdentifier(name, "drawable", Context.PackageName);
                 tab.SetIcon(null);
 
-                LinearLayout.LayoutParams linearLayoutParams = new LinearLayout.LayoutParams(LayoutParams.MatchParent, LayoutParams.MatchParent);
+                var linearLayoutParams = new LinearLayout.LayoutParams(LayoutParams.MatchParent, LayoutParams.MatchParent);
                 linearLayoutParams.SetMargins(0, -48, 0, 0);
 
-                ImageView img = new ImageView(Context);
+                var img = new ImageView(Context);
                 img.LayoutParameters = linearLayoutParams;
                 img.SetPadding(0, 0, 0, 48);
                 img.SetImageResource(id);
@@ -96,7 +96,7 @@ namespace eShopOnContainers.Droid.Renderers
                 return;
             }
 
-            for (int i = 0; i < _tabLayout.TabCount; i++)
+            for (var i = 0; i < _tabLayout.TabCount; i++)
             {
                 var tab = _tabLayout.GetTabAt(i);
                 var page = _tabbedPage.Children[tab.Position];

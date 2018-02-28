@@ -1,75 +1,60 @@
-﻿using eShopOnContainers.Core.ViewModels.Base;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using eShopOnContainers.Core.ViewModels.Base;
 
-namespace eShopOnContainers.Core.Validations
-{
-    public class ValidatableObject<T> : ExtendedBindableObject, IValidity
-    {
-        private readonly List<IValidationRule<T>> _validations;
-		private List<string> _errors;
-        private T _value;
-        private bool _isValid;
+namespace eShopOnContainers.Core.Validations {
+    public class ValidatableObject<T> : ExtendedBindableObject, IValidity {
+        public List<IValidationRule<T>> Validations { get; }
 
-        public List<IValidationRule<T>> Validations => _validations;
-
-		public List<string> Errors
-		{
-			get
-			{
-				return _errors;
-			}
-			set
-			{
-				_errors = value;
-				RaisePropertyChanged(() => Errors);
-			}
-		}
-
-        public T Value
-        {
-            get
-            {
-                return _value;
+        public List<string> Errors {
+            get => _errors;
+            set {
+                _errors = value;
+                this.RaisePropertyChanged(() => this.Errors);
             }
-            set
-            {
+        }
+
+        public T Value {
+            get => _value;
+            set {
                 _value = value;
-                RaisePropertyChanged(() => Value);
+                this.RaisePropertyChanged(() => this.Value);
             }
         }
 
-        public bool IsValid
-        {
-            get
-            {
-                return _isValid;
-            }
-            set
-            {
-                _isValid = value;
-                RaisePropertyChanged(() => IsValid);
-            }
+        public static implicit operator T(ValidatableObject<T> source) {
+            return source.Value;
         }
 
-        public ValidatableObject()
-        {
+        public ValidatableObject() {
             _isValid = true;
             _errors = new List<string>();
-            _validations = new List<IValidationRule<T>>();
+            this.Validations = new List<IValidationRule<T>>();
         }
 
-        public bool Validate()
-        {
-            Errors.Clear();
-
-            IEnumerable<string> errors = _validations.Where(v => !v.Check(Value))                             
-                .Select(v => v.ValidationMessage);
-
-			Errors = errors.ToList();
-            IsValid = !Errors.Any();
+        public bool Validate() {
+            this.Errors = this.Validations
+                .Where(rule => !rule.Check(this.Value))
+                .Select(rule => rule.ValidationMessage)
+                .ToList();
+            this.IsValid = !this.Errors.Any();
 
             return this.IsValid;
         }
+
+        public bool IsValid {
+            get => _isValid;
+            set {
+                _isValid = value;
+                this.RaisePropertyChanged(() => this.IsValid);
+            }
+        }
+
+        private List<string> _errors;
+        private bool _isValid;
+        private T _value;
     }
+
+   
 }

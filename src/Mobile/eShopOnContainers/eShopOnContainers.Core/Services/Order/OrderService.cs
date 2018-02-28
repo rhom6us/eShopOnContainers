@@ -23,13 +23,13 @@ namespace eShopOnContainers.Core.Services.Order
 
         public async Task<ObservableCollection<Models.Orders.Order>> GetOrdersAsync(string token)
         {
-            UriBuilder builder = new UriBuilder(GlobalSetting.Instance.OrdersEndpoint);
+            var builder = new UriBuilder(GlobalSetting.Instance.OrdersEndpoint);
 
             builder.Path = "api/v1/orders";
 
-            string uri = builder.ToString();
+            var uri = builder.ToString();
 
-            ObservableCollection<Models.Orders.Order> orders =
+            var orders =
                 await _requestProvider.GetAsync<ObservableCollection<Models.Orders.Order>>(uri, token);
 
             return orders;
@@ -40,13 +40,13 @@ namespace eShopOnContainers.Core.Services.Order
         {
             try
             {
-                UriBuilder builder = new UriBuilder(GlobalSetting.Instance.OrdersEndpoint);
+                var builder = new UriBuilder(GlobalSetting.Instance.OrdersEndpoint);
 
                 builder.Path = string.Format("api/v1/orders/{0}", orderId);
 
-                string uri = builder.ToString();
+                var uri = builder.ToString();
 
-                Models.Orders.Order order =
+                var order =
                     await _requestProvider.GetAsync<Models.Orders.Order>(uri, token);
 
                 return order;
@@ -76,13 +76,13 @@ namespace eShopOnContainers.Core.Services.Order
 
         public async Task<bool> CancelOrderAsync(int orderId, string token)
         {
-            UriBuilder builder = new UriBuilder(GlobalSetting.Instance.OrdersEndpoint);
+            var builder = new UriBuilder(GlobalSetting.Instance.OrdersEndpoint);
 
             builder.Path = "api/v1/orders/cancel";
 
             var cancelOrderCommand = new CancelOrderCommand(orderId);
 
-            string uri = builder.ToString();
+            var uri = builder.ToString();
             var header = "x-requestid";
 
             try

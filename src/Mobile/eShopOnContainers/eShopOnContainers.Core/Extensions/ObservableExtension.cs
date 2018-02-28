@@ -7,9 +7,9 @@ namespace eShopOnContainers.Core.Extensions
     {
         public static ObservableCollection<T> ToObservableCollection<T>(this IEnumerable<T> source)
         {
-            ObservableCollection<T> collection = new ObservableCollection<T>();
+            var collection = new ObservableCollection<T>();
 
-            foreach (T item in source)
+            foreach (var item in source)
             {
                 collection.Add(item);
             }

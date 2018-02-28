@@ -6,10 +6,7 @@ namespace eShopOnContainers.Core.Services.Settings
     {
         private readonly ISettingsServiceImplementation _settingsService;
 
-        ISettingsServiceImplementation AppSettings
-        {
-            get { return _settingsService; }
-        }
+        ISettingsServiceImplementation AppSettings => _settingsService;
 
         public SettingsService(IDependencyService dependencyService)
         {

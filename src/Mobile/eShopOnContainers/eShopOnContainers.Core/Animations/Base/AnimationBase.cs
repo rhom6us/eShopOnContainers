@@ -1,23 +1,42 @@
 ﻿using System;
 using System.Diagnostics;
+using System.Linq.Expressions;
+using System.Reflection;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Xamarin.Forms;
+using Xamarin.Forms.Xaml;
 
 namespace eShopOnContainers.Core.Animations.Base
 {
-    public abstract class AnimationBase : BindableObject
+    public abstract class BetterBindableObject<TClass> : BindableObject where TClass : BetterBindableObject<TClass> {
+        protected static BindableProperty CreateBinding<TProperty>(Expression<Func<TClass, TProperty>> propertySelector, TProperty defaultValue = default(TProperty)) {
+            var body = propertySelector.Body as MemberExpression;
+            var name = body.Member.Name;
+            
+            var prop = (PropertyInfo)body.Member;
+        
+            return Xamarin.Forms.BindableProperty.Create(name, typeof(TProperty), typeof(TClass), propertyChanged: ((bindable, oldValue, newValue) => prop.SetValue(bindable, newValue)));
+
+        }
+    }
+
+
+    public abstract class AnimationBase : BetterBindableObject<AnimationBase>
     {
         private bool _isRunning = false;
 
+
+
+
         public static readonly BindableProperty TargetProperty =
-        BindableProperty.Create("Target", typeof(VisualElement), typeof(AnimationBase), null,
-        propertyChanged: (bindable, oldValue, newValue) =>
-        ((AnimationBase)bindable).Target = (VisualElement)newValue);
+            BindableProperty.Create("Target", typeof(VisualElement), typeof(AnimationBase), null,
+                propertyChanged: (bindable, oldValue, newValue) => ((AnimationBase)bindable).Target = (VisualElement)newValue);
 
         public VisualElement Target
         {
-            get { return (VisualElement)GetValue(TargetProperty); }
-            set { SetValue(TargetProperty, value); }
+            get => (VisualElement)GetValue(TargetProperty);
+            set => SetValue(TargetProperty, value);
         }
 
         public static readonly BindableProperty DurationProperty =
@@ -27,20 +46,21 @@ namespace eShopOnContainers.Core.Animations.Base
 
         public string Duration
         {
-            get { return (string)GetValue(DurationProperty); }
-            set { SetValue(DurationProperty, value); }
+            get => (string)GetValue(DurationProperty);
+            set => SetValue(DurationProperty, value);
         }
 
-        public static readonly BindableProperty EasingProperty =
+        public static readonly BindableProperty EasingProperty = 
             BindableProperty.Create("Easing", typeof(EasingType), typeof(AnimationBase), EasingType.Linear,
             propertyChanged: (bindable, oldValue, newValue) =>
             ((AnimationBase)bindable).Easing = (EasingType)newValue);
 
         public EasingType Easing
         {
-            get { return (EasingType)GetValue(EasingProperty); }
-            set { SetValue(EasingProperty, value); }
+            get => (EasingType)GetValue(EasingProperty);
+            set => SetValue(EasingProperty, value);
         }
+
 
         public static readonly BindableProperty RepeatForeverProperty =
           BindableProperty.Create("RepeatForever", typeof(bool), typeof(AnimationBase), false,
@@ -49,8 +69,8 @@ namespace eShopOnContainers.Core.Animations.Base
 
         public bool RepeatForever
         {
-            get { return (bool)GetValue(RepeatForeverProperty); }
-            set { SetValue(RepeatForeverProperty, value); }
+            get => (bool)GetValue(RepeatForeverProperty);
+            set => SetValue(RepeatForeverProperty, value);
         }
 
         public static readonly BindableProperty DelayProperty =
@@ -60,8 +80,8 @@ namespace eShopOnContainers.Core.Animations.Base
 
         public int Delay
         {
-            get { return (int)GetValue(DelayProperty); }
-            set { SetValue(DelayProperty, value); }
+            get => (int)GetValue(DelayProperty);
+            set => SetValue(DelayProperty, value);
         }
 
         protected abstract Task BeginAnimation();

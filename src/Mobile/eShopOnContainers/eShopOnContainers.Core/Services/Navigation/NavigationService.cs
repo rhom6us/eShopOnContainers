@@ -49,9 +49,8 @@ namespace eShopOnContainers.Services
 
         public Task RemoveLastFromBackStackAsync()
         {
-            var mainPage = Application.Current.MainPage as CustomNavigationView;
 
-            if (mainPage != null)
+            if (Application.Current.MainPage is CustomNavigationView mainPage)
             {
                 mainPage.Navigation.RemovePage(
                     mainPage.Navigation.NavigationStack[mainPage.Navigation.NavigationStack.Count - 2]);
@@ -62,11 +61,10 @@ namespace eShopOnContainers.Services
 
         public Task RemoveBackStackAsync()
         {
-            var mainPage = Application.Current.MainPage as CustomNavigationView;
 
-            if (mainPage != null)
+            if (Application.Current.MainPage is CustomNavigationView mainPage)
             {
-                for (int i = 0; i < mainPage.Navigation.NavigationStack.Count - 1; i++)
+                for (var i = 0; i < mainPage.Navigation.NavigationStack.Count - 1; i++)
                 {
                     var page = mainPage.Navigation.NavigationStack[i];
                     mainPage.Navigation.RemovePage(page);
@@ -78,7 +76,7 @@ namespace eShopOnContainers.Services
 
         private async Task InternalNavigateToAsync(Type viewModelType, object parameter)
         {
-            Page page = CreatePage(viewModelType, parameter);
+            var page = CreatePage(viewModelType, parameter);
 
             if (page is LoginView)
             {
@@ -86,8 +84,7 @@ namespace eShopOnContainers.Services
             }
             else
             {
-                var navigationPage = Application.Current.MainPage as CustomNavigationView;
-                if (navigationPage != null)
+                if (Application.Current.MainPage is CustomNavigationView navigationPage)
                 {
                     await navigationPage.PushAsync(page);
                 }
@@ -111,13 +108,13 @@ namespace eShopOnContainers.Services
 
         private Page CreatePage(Type viewModelType, object parameter)
         {
-            Type pageType = GetPageTypeForViewModel(viewModelType);
+            var pageType = GetPageTypeForViewModel(viewModelType);
             if (pageType == null)
             {
                 throw new Exception($"Cannot locate page type for {viewModelType}");
             }
 
-            Page page = Activator.CreateInstance(pageType) as Page;
+            var page = Activator.CreateInstance(pageType) as Page;
             return page;
         }
     }

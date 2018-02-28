@@ -102,7 +102,7 @@ namespace eShopOnContainers.Droid.Services
                 if (_singleListener == null)
                     return;
 
-                for (int i = 0; i < providers.Count; ++i)
+                for (var i = 0; i < providers.Count; ++i)
                     Manager.RemoveUpdates(_singleListener);
             }
 
@@ -113,7 +113,7 @@ namespace eShopOnContainers.Droid.Services
                 {
                     _singleListener.Cancel();
 
-                    for (int i = 0; i < providers.Count; ++i)
+                    for (var i = 0; i < providers.Count; ++i)
                         Manager.RemoveUpdates(_singleListener);
                 }, true);
             }
@@ -121,7 +121,7 @@ namespace eShopOnContainers.Droid.Services
             try
             {
                 var looper = Looper.MyLooper() ?? Looper.MainLooper;
-                int enabled = 0;
+                var enabled = 0;
                 for (var i = 0; i < providers.Count; ++i)
                 {
                     if (Manager.IsProviderEnabled(providers[i]))
@@ -132,7 +132,7 @@ namespace eShopOnContainers.Droid.Services
 
                 if (enabled == 0)
                 {
-                    for (int i = 0; i < providers.Count; ++i)
+                    for (var i = 0; i < providers.Count; ++i)
                         Manager.RemoveUpdates(_singleListener);
 
                     tcs.SetException(new GeolocationException(GeolocationError.PositionUnavailable));

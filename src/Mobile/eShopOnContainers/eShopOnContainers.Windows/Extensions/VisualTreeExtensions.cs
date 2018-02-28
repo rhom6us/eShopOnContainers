@@ -17,7 +17,7 @@ namespace eShopOnContainers.Windows.Extensions
         {
             Debug.Assert(parent != null, "The parent cannot be null!");
             var childCount = VisualTreeHelper.GetChildrenCount(parent);
-            for (int counter = 0; counter < childCount; counter++)
+            for (var counter = 0; counter < childCount; counter++)
             {
                 yield return VisualTreeHelper.GetChild(parent, counter);
             }
@@ -104,7 +104,7 @@ namespace eShopOnContainers.Windows.Extensions
             {
                 var count = VisualTreeHelper.GetChildrenCount(start);
 
-                for (int i = 0; i < count; i++)
+                for (var i = 0; i < count; i++)
                 {
                     var child = VisualTreeHelper.GetChild(start, i);
                     queue.Enqueue(child);
@@ -130,7 +130,7 @@ namespace eShopOnContainers.Windows.Extensions
                 {
                     var count = VisualTreeHelper.GetChildrenCount(parent);
 
-                    for (int i = 0; i < count; i++)
+                    for (var i = 0; i < count; i++)
                     {
                         var child = VisualTreeHelper.GetChild(parent, i);
                         yield return child;
@@ -152,7 +152,7 @@ namespace eShopOnContainers.Windows.Extensions
 
             var count = VisualTreeHelper.GetChildrenCount(parent);
 
-            for (int i = 0; i < count; i++)
+            for (var i = 0; i < count; i++)
             {
                 var child = VisualTreeHelper.GetChild(parent, i);
                 yield return child;
@@ -162,7 +162,7 @@ namespace eShopOnContainers.Windows.Extensions
         public static IEnumerable<DependencyObject> GetChildrenByZIndex(
             this DependencyObject parent)
         {
-            int i = 0;
+            var i = 0;
             var indexedChildren =
                 parent.GetChildren().Cast<FrameworkElement>().Select(
                 child => new { Index = i++, ZIndex = Canvas.GetZIndex(child), Child = child });
@@ -206,7 +206,7 @@ namespace eShopOnContainers.Windows.Extensions
             {
                 var count = VisualTreeHelper.GetChildrenCount(parent);
 
-                for (int i = 0; i < count; i++)
+                for (var i = 0; i < count; i++)
                 {
                     var child = VisualTreeHelper.GetChild(parent, i);
                     yield return child;
@@ -335,8 +335,8 @@ namespace eShopOnContainers.Windows.Extensions
         {
             if (list != null && obj != null)
             {
-                int childrens = VisualTreeHelper.GetChildrenCount(obj);
-                for (int x = 0; x < childrens; x++)
+                var childrens = VisualTreeHelper.GetChildrenCount(obj);
+                for (var x = 0; x < childrens; x++)
                 {
                     DependencyObject tmp = VisualTreeHelper.GetChild(obj, x);
                     list.Add(tmp);
@@ -354,10 +354,10 @@ namespace eShopOnContainers.Windows.Extensions
 
         public static T FindNameInVisualTree<T>(DependencyObject root, string name)
         {
-            T res = default(T);
+            var res = default(T);
             List<DependencyObject> tree = null;
             tree = GetVisualTree(root);
-            for (int x = 0; x < tree.Count; x++)
+            for (var x = 0; x < tree.Count; x++)
             {
                 if (tree[x] is FrameworkElement)
                 {

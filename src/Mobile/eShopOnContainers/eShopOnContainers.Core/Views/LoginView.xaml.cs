@@ -21,17 +21,14 @@ namespace eShopOnContainers.Core.Views
             this.Content = null;
             this.Content = content;
 
-			var vm = BindingContext as LoginViewModel;
-            if (vm != null)
-            {
-                vm.InvalidateMock();
+            if (!(this.BindingContext is LoginViewModel vm))
+                return;
+            vm.InvalidateMock();
 
-				if (!vm.IsMock)
-				{
-					_animate = true;
-					await AnimateIn();
-				}
-            }
+            if (vm.IsMock)
+                return;
+            _animate = true;
+            await this.AnimateIn();
         }
 
         protected override void OnDisappearing()

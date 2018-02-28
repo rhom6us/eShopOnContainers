@@ -7,10 +7,7 @@ namespace eShopOnContainers.Droid.Effects
         private bool _unloaded;
         private bool _attached;
 
-        protected bool Attached
-        {
-            get { return _attached; }
-        }
+        protected bool Attached => _attached;
 
         protected virtual bool CanBeApplied()
         {

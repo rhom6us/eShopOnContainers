@@ -24,7 +24,7 @@ namespace eShopOnContainers.Core.ViewModels
 
         public ObservableCollection<CatalogItem> Products
         {
-            get { return _products; }
+            get => _products;
             set
             {
                 _products = value;
@@ -34,7 +34,7 @@ namespace eShopOnContainers.Core.ViewModels
 
         public ObservableCollection<CatalogBrand> Brands
         {
-            get { return _brands; }
+            get => _brands;
             set
             {
                 _brands = value;
@@ -44,7 +44,7 @@ namespace eShopOnContainers.Core.ViewModels
 
         public CatalogBrand Brand
         {
-            get { return _brand; }
+            get => _brand;
             set
             {
                 _brand = value;
@@ -55,7 +55,7 @@ namespace eShopOnContainers.Core.ViewModels
 
         public ObservableCollection<CatalogType> Types
         {
-            get { return _types; }
+            get => _types;
             set
             {
                 _types = value;
@@ -65,7 +65,7 @@ namespace eShopOnContainers.Core.ViewModels
 
         public CatalogType Type
         {
-            get { return _type; }
+            get => _type;
             set
             {
                 _type = value;
@@ -74,7 +74,7 @@ namespace eShopOnContainers.Core.ViewModels
             }
         }
 
-        public bool IsFilter { get { return Brand != null || Type != null; } }
+        public bool IsFilter => Brand != null || Type != null;
 
         public ICommand AddCatalogItemCommand => new Command<CatalogItem>(AddCatalogItem);
 

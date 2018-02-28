@@ -13,10 +13,7 @@ namespace eShopOnContainers.Core.ViewModels.Base
 
         public bool IsBusy
         {
-            get
-            {
-                return _isBusy;
-            }
+            get => _isBusy;
 
             set
             {

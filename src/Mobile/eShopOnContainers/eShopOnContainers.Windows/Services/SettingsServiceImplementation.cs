@@ -18,7 +18,7 @@ namespace eShopOnContainers.Windows.Services
 
         bool AddOrUpdateValueInternal<T>(string key, T value)
         {
-            bool valueChanged = false;
+            var valueChanged = false;
 
             if (value == null)
             {

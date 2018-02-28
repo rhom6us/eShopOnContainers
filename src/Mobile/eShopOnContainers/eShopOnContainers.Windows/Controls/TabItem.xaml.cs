@@ -11,7 +11,7 @@ namespace eShopOnContainers.Windows.Controls
 
         public string Icon
         {
-            get { return GetValue(IconProperty) as string; }
+            get => GetValue(IconProperty) as string;
             set { SetValue(IconProperty, value); }
         }
 
@@ -20,7 +20,7 @@ namespace eShopOnContainers.Windows.Controls
 
         public string BadgeText
         {
-            get { return GetValue(BadgeTextProperty) as string; }
+            get => GetValue(BadgeTextProperty) as string;
             set { SetValue(BadgeTextProperty, value); }
         }
 
@@ -29,7 +29,7 @@ namespace eShopOnContainers.Windows.Controls
 
         public SolidColorBrush BadgeColor
         {
-            get { return GetValue(BadgeColorProperty) as SolidColorBrush; }
+            get => GetValue(BadgeColorProperty) as SolidColorBrush;
             set { SetValue(BadgeColorProperty, value); }
         }
 
@@ -38,7 +38,7 @@ namespace eShopOnContainers.Windows.Controls
 
         public string Label
         {
-            get { return GetValue(LabelProperty) as string; }
+            get => GetValue(LabelProperty) as string;
             set { SetValue(LabelProperty, value); }
         }
 

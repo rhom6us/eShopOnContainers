@@ -35,8 +35,8 @@ namespace eShopOnContainers.Core.Services.FixUri
                 {
                     foreach (var catalogItem in catalogItems)
                     {
-                        MatchCollection serverResult = IpRegex.Matches(catalogItem.PictureUri);
-                        MatchCollection localResult = IpRegex.Matches(_settingsService.UrlBase);
+                        var serverResult = IpRegex.Matches(catalogItem.PictureUri);
+                        var localResult = IpRegex.Matches(_settingsService.UrlBase);
 
                         if (serverResult.Count != -1 && localResult.Count != -1)
                         {
@@ -68,8 +68,8 @@ namespace eShopOnContainers.Core.Services.FixUri
                 {
                     foreach (var basketItem in basketItems)
                     {
-                        MatchCollection serverResult = IpRegex.Matches(basketItem.PictureUrl);
-                        MatchCollection localResult = IpRegex.Matches(_settingsService.UrlBase);
+                        var serverResult = IpRegex.Matches(basketItem.PictureUrl);
+                        var localResult = IpRegex.Matches(_settingsService.UrlBase);
 
                         if (serverResult.Count != -1 && localResult.Count != -1)
                         {
@@ -100,8 +100,8 @@ namespace eShopOnContainers.Core.Services.FixUri
                 {
                     foreach (var campaignItem in campaignItems)
                     {
-                        MatchCollection serverResult = IpRegex.Matches(campaignItem.PictureUri);
-                        MatchCollection localResult = IpRegex.Matches(_settingsService.UrlBase);
+                        var serverResult = IpRegex.Matches(campaignItem.PictureUri);
+                        var localResult = IpRegex.Matches(_settingsService.UrlBase);
 
                         if (serverResult.Count != -1 && localResult.Count != -1)
                         {

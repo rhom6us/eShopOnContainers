@@ -41,7 +41,7 @@ namespace eShopOnContainers.Droid.Effects
                     return;
                 }
 
-                double min = Math.Min(width, height);
+                var min = Math.Min(width, height);
                 var radius = (float)(min / 2.0);
 
                 var layerX = width > min ? (width - min) / 2 : 0;

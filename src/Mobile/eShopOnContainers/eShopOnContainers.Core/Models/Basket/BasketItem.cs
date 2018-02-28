@@ -17,17 +17,11 @@ namespace eShopOnContainers.Core.Models.Basket
 
         public decimal OldUnitPrice { get; set; }
 
-        public bool HasNewPrice
-        {
-            get
-            {
-                return OldUnitPrice != 0.0m;
-            }
-        }
+        public bool HasNewPrice => OldUnitPrice != 0.0m;
 
         public int Quantity
         {
-            get { return _quantity; }
+            get => _quantity;
             set
             {
                 _quantity = value;
@@ -37,7 +31,7 @@ namespace eShopOnContainers.Core.Models.Basket
 
         public string PictureUrl { get; set; }
 
-        public decimal Total { get { return Quantity * UnitPrice; } }
+        public decimal Total => Quantity * UnitPrice;
 
         public override string ToString()
         {

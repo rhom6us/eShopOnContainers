@@ -27,13 +27,13 @@ namespace eShopOnContainers.Core.Services.RequestProvider
 
         public async Task<TResult> GetAsync<TResult>(string uri, string token = "")
         {
-            HttpClient httpClient = CreateHttpClient(token);
-            HttpResponseMessage response = await httpClient.GetAsync(uri);
+            var httpClient = CreateHttpClient(token);
+            var response = await httpClient.GetAsync(uri);
 
             await HandleResponse(response);
-            string serialized = await response.Content.ReadAsStringAsync();
+            var serialized = await response.Content.ReadAsStringAsync();
 
-            TResult result = await Task.Run(() => 
+            var result = await Task.Run(() => 
                 JsonConvert.DeserializeObject<TResult>(serialized, _serializerSettings));
 
             return result;
@@ -41,7 +41,7 @@ namespace eShopOnContainers.Core.Services.RequestProvider
 
         public async Task<TResult> PostAsync<TResult>(string uri, TResult data, string token = "", string header = "")
         {
-            HttpClient httpClient = CreateHttpClient(token);
+            var httpClient = CreateHttpClient(token);
 
             if (!string.IsNullOrEmpty(header))
             {
@@ -50,12 +50,12 @@ namespace eShopOnContainers.Core.Services.RequestProvider
 
             var content = new StringContent(JsonConvert.SerializeObject(data));
             content.Headers.ContentType = new MediaTypeHeaderValue("application/json");
-            HttpResponseMessage response = await httpClient.PostAsync(uri, content);
+            var response = await httpClient.PostAsync(uri, content);
 
             await HandleResponse(response);
-            string serialized = await response.Content.ReadAsStringAsync();
+            var serialized = await response.Content.ReadAsStringAsync();
 
-            TResult result = await Task.Run(() =>
+            var result = await Task.Run(() =>
                 JsonConvert.DeserializeObject<TResult>(serialized, _serializerSettings));
 
             return result;
@@ -63,7 +63,7 @@ namespace eShopOnContainers.Core.Services.RequestProvider
 
         public async Task<TResult> PostAsync<TResult>(string uri, string data, string clientId, string clientSecret)
         {
-			HttpClient httpClient = CreateHttpClient(string.Empty);
+			var httpClient = CreateHttpClient(string.Empty);
 
             if (!string.IsNullOrWhiteSpace(clientId) && !string.IsNullOrWhiteSpace(clientSecret))
 			{
@@ -72,12 +72,12 @@ namespace eShopOnContainers.Core.Services.RequestProvider
 
             var content = new StringContent(data);
             content.Headers.ContentType = new MediaTypeHeaderValue("application/x-www-form-urlencoded");
-			HttpResponseMessage response = await httpClient.PostAsync(uri, content);
+			var response = await httpClient.PostAsync(uri, content);
 
 			await HandleResponse(response);
-			string serialized = await response.Content.ReadAsStringAsync();
+			var serialized = await response.Content.ReadAsStringAsync();
 
-			TResult result = await Task.Run(() =>
+			var result = await Task.Run(() =>
 				JsonConvert.DeserializeObject<TResult>(serialized, _serializerSettings));
 
 			return result;
@@ -85,7 +85,7 @@ namespace eShopOnContainers.Core.Services.RequestProvider
 
         public async Task<TResult> PutAsync<TResult>(string uri, TResult data, string token = "", string header = "")
         {
-            HttpClient httpClient = CreateHttpClient(token);
+            var httpClient = CreateHttpClient(token);
 
             if (!string.IsNullOrEmpty(header))
             {
@@ -94,12 +94,12 @@ namespace eShopOnContainers.Core.Services.RequestProvider
 
             var content = new StringContent(JsonConvert.SerializeObject(data));
             content.Headers.ContentType = new MediaTypeHeaderValue("application/json");
-            HttpResponseMessage response = await httpClient.PutAsync(uri, content);
+            var response = await httpClient.PutAsync(uri, content);
 
             await HandleResponse(response);
-            string serialized = await response.Content.ReadAsStringAsync();
+            var serialized = await response.Content.ReadAsStringAsync();
 
-            TResult result = await Task.Run(() =>
+            var result = await Task.Run(() =>
                 JsonConvert.DeserializeObject<TResult>(serialized, _serializerSettings));
 
             return result;
@@ -107,7 +107,7 @@ namespace eShopOnContainers.Core.Services.RequestProvider
 
         public async Task DeleteAsync(string uri, string token = "")
         {
-            HttpClient httpClient = CreateHttpClient(token);
+            var httpClient = CreateHttpClient(token);
             await httpClient.DeleteAsync(uri);
         }
 

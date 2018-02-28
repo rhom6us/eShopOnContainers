@@ -42,7 +42,7 @@ namespace eShopOnContainers.Droid.Renderers
 
         public Color BadgeColor
         {
-            get { return _backgroundShape.Paint.Color; }
+            get => _backgroundShape.Paint.Color;
             set
             {
                 _backgroundShape.Paint.Color = value;
@@ -53,7 +53,7 @@ namespace eShopOnContainers.Droid.Renderers
 
         public Color TextColor
         {
-            get { return new Color(CurrentTextColor); }
+            get => new Color(CurrentTextColor);
             set { SetTextColor(value); }
         }
 
@@ -221,7 +221,7 @@ namespace eShopOnContainers.Droid.Renderers
 
         public new string Text
         {
-            get { return base.Text; }
+            get => base.Text;
             set
             {
                 base.Text = value;

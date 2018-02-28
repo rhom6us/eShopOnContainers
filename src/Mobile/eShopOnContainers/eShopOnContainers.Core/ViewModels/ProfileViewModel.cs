@@ -25,7 +25,7 @@ namespace eShopOnContainers.Core.ViewModels
 
         public ObservableCollection<Order> Orders
         {
-            get { return _orders; }
+            get => _orders;
             set
             {
                 _orders = value;

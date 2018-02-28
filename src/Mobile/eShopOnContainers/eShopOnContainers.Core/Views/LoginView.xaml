@@ -7,7 +7,8 @@
              xmlns:converters="clr-namespace:eShopOnContainers.Core.Converters;assembly=eShopOnContainers.Core"
              xmlns:triggers="clr-namespace:eShopOnContainers.Core.Triggers;assembly=eShopOnContainers.Core"
              xmlns:behaviors="clr-namespace:eShopOnContainers.Core.Behaviors;assembly=eShopOnContainers.Core"
-			 viewModelBase:ViewModelLocator.AutoWireViewModel="true">
+             xmlns:controls="clr-namespace:eShopOnContainers.Core.Controls;assembly=eShopOnContainers.Core"
+             viewModelBase:ViewModelLocator.AutoWireViewModel="true">
     <ContentPage.Title>
         <OnPlatform x:TypeArguments="x:String">
             <On Platform="iOS, UWP, WinRT, WinPhone" Value="eShop on Containers" />
@@ -170,9 +171,7 @@
               Text="ARE YOU REGISTERED?"
               Style="{StaticResource TitleLabelStyle}"/>
             <!-- LOGIN FORM -->
-            <StackLayout   
-                Grid.Row="2"
-                Margin="24">
+            <StackLayout    Grid.Row="2" Margin="24">
                 <Label
                   Text="User name or email"
                   Style="{StaticResource HeaderLabelStyle}" />
@@ -227,8 +226,9 @@
 					</Entry.Triggers>
                 </Entry>
 				<Label 
-					Text="{Binding Password.Errors, Converter={StaticResource FirstValidationErrorConverter}"
+					Text="{Binding Password.Errors, Converter={StaticResource FirstValidationErrorConverter}}"
 					Style="{StaticResource ValidationErrorLabelStyle}" />
+                <controls:FacebookLoginButton SignInCommand="{Binding ExternalSignInCommand}"></controls:FacebookLoginButton>
             </StackLayout>
             <!-- LOGIN BUTTON -->
             <Grid
@@ -282,18 +282,31 @@
                 BackgroundColor="{StaticResource BlackColor}"
                 Opacity="0.5"/>
             <!-- LOG IN BUTTON -->
-            <Grid
+            <!--<Grid
                 Grid.Column="0"
                 Grid.Row="1"
                 Style="{StaticResource LoginPanelStyle}">
                 <Label
-                  Text="[ LOGIN ]"
-                  Style="{StaticResource LoginButtonStyle}"/>
+                    Text="[ LOGIN ]"
+                    Style="{StaticResource LoginButtonStyle}"/>
                 <Grid.GestureRecognizers>
                     <TapGestureRecognizer
                         Command="{Binding SignInCommand}"
                         NumberOfTapsRequired="1" />
                 </Grid.GestureRecognizers>
+            </Grid>-->
+            <!-- LOG IN BUTTON -->
+            <Grid
+                Grid.Column="0"
+                Grid.Row="1"
+                Style="{StaticResource LoginPanelStyle}">
+                <controls:FacebookLoginButton></controls:FacebookLoginButton>
+                
+                <!--<Grid.GestureRecognizers>
+                    <TapGestureRecognizer
+                        Command="{Binding SignInCommand}"
+                        NumberOfTapsRequired="1" />
+                </Grid.GestureRecognizers>-->
             </Grid>
             <!-- REGISTER BUTTON -->
             <Grid
