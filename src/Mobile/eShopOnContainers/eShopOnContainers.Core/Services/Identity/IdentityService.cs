@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Net;
 using System.Text;
 using System.Threading.Tasks;
@@ -7,6 +8,7 @@ using eShopOnContainers.Core.Services.RequestProvider;
 using eShopOnContainers.Core.Models.Token;
 using eShopOnContainers.Core.Helpers;
 using IdentityModel;
+using IdentityModel.Client;
 using PCLCrypto;
 using static PCLCrypto.WinRTCrypto;
 
@@ -46,6 +48,29 @@ namespace eShopOnContainers.Core.Services.Identity
             return authorizeUri;
         }
 
+
+        public async Task<string> ExchangeToken(string token) {
+            // Create URI to authorization endpoint
+           
+         
+
+
+            //var disco = await DiscoveryClient.GetAsync("https://6ffb6022.ngrok.io");
+            //if (disco.IsError) throw new Exception(disco.Error);
+            
+            var tokenClient = new TokenClient(GlobalSetting.Instance.TokenEndpoint, GlobalSetting.Instance.ClientId, GlobalSetting.Instance.ClientSecret);
+            //var result = await tokenClient.RequestCustomGrantAsync("token_exchange", "openid profile basket orders locations marketing offline_access", extra: );
+
+            var result = await tokenClient.RequestCustomGrantAsync("token_exchange", "openid profile basket orders locations marketing offline_access", extra: new {
+               // userId = token.UserId,
+               // applicationId = token.ApplicationId,
+                provider = "facebook",
+                token = token,
+                email = "rhombus.data@gmail.com"
+            });
+            return result.AccessToken;
+
+        }
         public string CreateLogoutRequest(string token)
         {
             if (string.IsNullOrEmpty(token))

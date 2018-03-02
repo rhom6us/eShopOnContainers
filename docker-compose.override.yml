@@ -7,13 +7,24 @@ version: '3.3'
 # An external IP or DNS name has to be used (instead localhost and the 10.0.75.1 IP) when testing the Web apps and the Xamarin apps from remote machines/devices using the same WiFi, for instance.
 
 services:
-      
+  useractions.api:
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_URLS=http://0.0.0.0:80
+      - identityUrl=http://identity.api              #Local: You need to open your local dev-machine firewall at range 5100-5110.
+      - IdentityUrlExternal=http://${ESHOP_EXTERNAL_DNS_NAME_OR_IP}:5105
+      - EventBusConnection=${ESHOP_AZURE_SERVICE_BUS:-rabbitmq}
+      - ApplicationInsights__InstrumentationKey=${INSTRUMENTATION_KEY}
+      - OrchestratorType=${ORCHESTRATOR_TYPE}
+    ports:
+      - "5112:80"
+
   basket.api:
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
       - ASPNETCORE_URLS=http://0.0.0.0:80
       - ConnectionString=${ESHOP_AZURE_REDIS_BASKET_DB:-basket.data}
-      - identityUrl=http://identity.api              #Local: You need to open your local dev-machine firewall at range 5100-5110.
+      - identityUrl=https://abeb159c.ngrok.io #http://identity.api              #Local: You need to open your local dev-machine firewall at range 5100-5110.
       - IdentityUrlExternal=http://${ESHOP_EXTERNAL_DNS_NAME_OR_IP}:5105
       - EventBusConnection=${ESHOP_AZURE_SERVICE_BUS:-rabbitmq}
       - EventBusUserName=${ESHOP_SERVICE_BUS_USERNAME}
@@ -57,7 +68,13 @@ services:
       - MarketingApiClient=http://${ESHOP_EXTERNAL_DNS_NAME_OR_IP}:5110
       - BasketApiClient=http://${ESHOP_EXTERNAL_DNS_NAME_OR_IP}:5103
       - OrderingApiClient=http://${ESHOP_EXTERNAL_DNS_NAME_OR_IP}:5102
-      - UseCustomizationData=True  
+      - UseCustomizationData=True 
+      - AzureServiceBusEnabled=False 
+      - EventBusConnection=${ESHOP_AZURE_SERVICE_BUS:-rabbitmq}
+      - EventBusUserName=${ESHOP_SERVICE_BUS_USERNAME}
+      - EventBusPassword=${ESHOP_SERVICE_BUS_PASSWORD}         
+      - AzureStorageAccountName=${ESHOP_AZURE_STORAGE_CATALOG_NAME}
+      - AzureStorageAccountKey=${ESHOP_AZURE_STORAGE_CATALOG_KEY}
       - ApplicationInsights__InstrumentationKey=${INSTRUMENTATION_KEY}
       - OrchestratorType=${ORCHESTRATOR_TYPE}
     ports:
@@ -155,7 +172,7 @@ services:
       - OrderingUrl=http://ordering.api
       - BasketUrl=http://basket.api
       - LocationsUrl=http://locations.api
-      - IdentityUrl=http://10.0.75.1:5105  # Local Mac: Use http://docker.for.mac.localhost:5105 || Local Windows:  Use 10.0.75.1 in a "Docker for Windows" environment, if using "localhost" from browser. || #Remote access: Use ${ESHOP_EXTERNAL_DNS_NAME_OR_IP} if using external IP or DNS name from browser.
+      - IdentityUrl=https://abeb159c.ngrok.io  #http://${ESHOP_EXTERNAL_DNS_NAME_OR_IP}:5105  # 10.0.75.1:5105  # Local Mac: Use http://docker.for.mac.localhost:5105 || Local Windows:  Use 10.0.75.1 in a "Docker for Windows" environment, if using "localhost" from browser. || #Remote access: Use ${ESHOP_EXTERNAL_DNS_NAME_OR_IP} if using external IP or DNS name from browser.
       - MarketingUrl=http://marketing.api                                                    
       - CatalogUrlHC=http://catalog.api/hc
       - OrderingUrlHC=http://ordering.api/hc

@@ -1,0 +1,48 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp2.0</TargetFramework>
+    <DockerComposeProjectPath>..\..\..\..\docker-compose.dcproj</DockerComposeProjectPath>
+    <UserSecretsId>b22cbe0a-1f8d-44e6-8a55-7b61bc36401b</UserSecretsId>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Remove="Certificate\callisto.pfx" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Include="..\..\..\Shared\Guards.cs" Link="Guards.cs" />
+    <Compile Include="..\..\Identity\Identity.API\IntegrationEvents\Events\AccessTokenReceived.cs" Link="IntegrationEvents\Events\AccessTokenReceived.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="Webhooks\Facebook\FacebookWebhookController.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="autofac.Extensions.DependencyInjection" Version="4.2.1" />
+    <PackageReference Include="jetbrains.Annotations" Version="11.1.0" />
+    <PackageReference Include="microsoft.ApplicationInsights.DependencyCollector" Version="2.5.1" />
+    <PackageReference Include="Microsoft.ApplicationInsights.kubernetes" Version="1.0.0-beta3" />
+    <PackageReference Include="Microsoft.ApplicationInsights.servicefabric" Version="2.0.1-beta1" />
+    <PackageReference Include="Microsoft.AspNetCore.All" Version="2.0.5" />
+    <PackageReference Include="microsoft.aspnetcore.healthchecks" Version="1.0.0" />
+    <PackageReference Include="mongocsharpdriver" Version="2.5.0" />
+    <PackageReference Include="Swashbuckle.AspNetCore" Version="1.2.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <DotNetCliToolReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Tools" Version="2.0.2" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="Certificate\callisto.pfx" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\BuildingBlocks\EventBus\EventBusRabbitMQ\EventBusRabbitMQ.csproj" />
+    <ProjectReference Include="..\..\..\BuildingBlocks\EventBus\EventBusServiceBus\EventBusServiceBus.csproj" />
+    <ProjectReference Include="..\..\..\BuildingBlocks\EventBus\EventBus\EventBus.csproj" />
+  </ItemGroup>
+
+</Project>

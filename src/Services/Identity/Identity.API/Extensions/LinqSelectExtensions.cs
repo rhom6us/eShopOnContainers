@@ -3,8 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using JetBrains.Annotations;
 
-namespace Microsoft.eShopOnContainers.Services.Identity.API.Extensions {
+namespace Identity.API.Extensions {
     public static class LinqSelectExtensions {
+        [NotNull]
         public static IEnumerable<ISelectTryResult<TSource, TResult>> SelectTry<TSource, TResult>(this IEnumerable<TSource> source, Func<TSource, TResult> selector) {
 
             return source.Select(
@@ -19,15 +20,18 @@ namespace Microsoft.eShopOnContainers.Services.Identity.API.Extensions {
 
         }
 
+        [NotNull]
         public static IEnumerable<TResult> Switch<TSource, TOperand, TResult>([NotNull]this IEnumerable<TSource> source, Func<TSource, TOperand> operandSelector, IDictionary<TOperand, Func<TSource,TResult>> branches) {
             return source.Select(item => branches[operandSelector(item)](item));
             
         }
 
+        [NotNull]
         public static IEnumerable<TResult> OnCaughtException<TSource, TResult>(this IEnumerable<ISelectTryResult<TSource, TResult>> source, Func<Exception, TResult> exceptionHandler) {
-            return OnCaughtException(source, (s, ex) => exceptionHandler(ex));
+            return LinqSelectExtensions.OnCaughtException(source, (s, ex) => exceptionHandler(ex));
         }
 
+        [NotNull]
         public static IEnumerable<TResult> OnCaughtException<TSource, TResult>(this IEnumerable<ISelectTryResult<TSource, TResult>> source, Func<TSource, Exception,  TResult> exceptionHandler) {
             return source.Select(x => x.CaughtException == null ? x.Result : exceptionHandler(x.Source, x.CaughtException));
         }

@@ -11,7 +11,11 @@ namespace eShopOnContainers.Core.Models.Token
         public string AccessToken { get; set; }
 
 		[JsonProperty("expires_in")]
-        public int ExpiresIn { get; set; }
+        private int ExpiresInRaw { get; set; }
+
+
+        [JsonIgnore]
+        public System.TimeSpan ExpiresIn => System.TimeSpan.FromSeconds(this.ExpiresInRaw);
 
 		[JsonProperty("token_type")]
         public string TokenType { get; set; }

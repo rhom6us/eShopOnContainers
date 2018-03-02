@@ -1,21 +1,18 @@
-﻿using System.Linq;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Linq;
 using System.Threading.Tasks;
 using Identity.API.Data;
+using Identity.API.Models.ManageViewModels;
+using Identity.API.Services;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.eShopOnContainers.Services.Identity.API.Services;
 using Microsoft.Extensions.Logging;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Threading.Tasks;
-using Identity.API.Models.ManageViewModels;
 
-
-namespace Identity.API.Controllers.Manage
+namespace Identity.API.Controllers
 
 {
     [Authorize()]
@@ -196,7 +193,7 @@ namespace Identity.API.Controllers.Manage
         [HttpGet]
         public IActionResult ChangePassword()
         {
-            return View();
+            return this.View();
         }
 
         [HttpPost]
@@ -205,7 +202,7 @@ namespace Identity.API.Controllers.Manage
         {
             if (!this.ModelState.IsValid)
             {
-                return View(model);
+                return this.View(model);
             }
             var user = await this.GetCurrentUserAsync();
             if (user != null)
@@ -218,7 +215,7 @@ namespace Identity.API.Controllers.Manage
                     return this.RedirectToAction(nameof(this.Index), new { Message = ManageMessageId.ChangePasswordSuccess });
                 }
                 this.AddErrors(result);
-                return View(model);
+                return this.View(model);
             }
             return this.RedirectToAction(nameof(this.Index), new { Message = ManageMessageId.Error });
         }
@@ -270,7 +267,7 @@ namespace Identity.API.Controllers.Manage
             var schemes = await _signInManager.GetExternalAuthenticationSchemesAsync();
             var otherLogins = schemes.Where(auth => userLogins.All(ul => auth.Name != ul.LoginProvider)).ToList();
             this.ViewData["ShowRemoveButton"] = user.PasswordHash != null || userLogins.Count > 1;
-            return View(new ManageLoginsViewModel
+            return this.View(new ManageLoginsViewModel
             {
                 CurrentLogins = userLogins,
                 OtherLogins = otherLogins

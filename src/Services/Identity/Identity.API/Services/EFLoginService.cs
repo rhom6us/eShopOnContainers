@@ -5,9 +5,10 @@ using System.Security.Claims;
 using System.Threading.Tasks;
 using Identity.API.Data;
 using IdentityModel;
+using JetBrains.Annotations;
 using Microsoft.AspNetCore.Identity;
 
-namespace Microsoft.eShopOnContainers.Services.Identity.API.Services {
+namespace Identity.API.Services {
     public class EFLoginService : ILoginService<ApplicationUser> {
         public EFLoginService(UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager) {
             _userManager = userManager;
@@ -28,6 +29,7 @@ namespace Microsoft.eShopOnContainers.Services.Identity.API.Services {
 
 
         /// <summary>
+        [ItemNotNull]
         public async Task<ApplicationUser> AutoProvisionUserAsync(string provider, string userId, IEnumerable<Claim> claims)
         {
             // create a list of claims that we want to transfer into our store

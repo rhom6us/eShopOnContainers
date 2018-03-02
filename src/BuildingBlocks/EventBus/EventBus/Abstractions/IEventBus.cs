@@ -7,18 +7,18 @@ namespace Microsoft.eShopOnContainers.BuildingBlocks.EventBus.Abstractions
     {
         void Publish(IntegrationEvent @event);
 
-        void Subscribe<T, TH>()
-            where T : IntegrationEvent
-            where TH : IIntegrationEventHandler<T>;
+        IEventBus Subscribe<TEvent, THanedler>()
+            where TEvent : IntegrationEvent
+            where THanedler : IIntegrationEventHandler<TEvent>;
 
-        void SubscribeDynamic<TH>(string eventName)
-            where TH : IDynamicIntegrationEventHandler;
+        IEventBus SubscribeDynamic<THandler>(string eventName)
+            where THandler : IDynamicIntegrationEventHandler;
 
-        void UnsubscribeDynamic<TH>(string eventName)
-            where TH : IDynamicIntegrationEventHandler;
+        IEventBus UnsubscribeDynamic<THandler>(string eventName)
+            where THandler : IDynamicIntegrationEventHandler;
 
-        void Unsubscribe<T, TH>()
-            where TH : IIntegrationEventHandler<T>
-            where T : IntegrationEvent;
+        IEventBus Unsubscribe<TEvent, THandler>()
+            where THandler : IIntegrationEventHandler<TEvent>
+            where TEvent : IntegrationEvent;
     }
 }

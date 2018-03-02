@@ -18,7 +18,7 @@ namespace Microsoft.AspNetCore.Hosting
 
                 var logger = services.GetRequiredService<ILogger<TContext>>();
 
-                var context = services.GetService<TContext>();
+                var context = services.GetRequiredService<TContext>();
 
                 try
                 {

@@ -1,124 +1,147 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
+using Identity.API.IdentityServerExternalAuth.Providers;
+using Identity.API.IntegrationEvents;
 using IdentityServer4.Models;
 using IdentityServer4.Validation;
-using IdentityServerExternalAuth.Helpers;
-using IdentityServerExternalAuth.Interfaces;
-using IdentityServerExternalAuth.Interfaces.Processors;
-using IdentityServerExternalAuth.Repositories.Interfaces;
 using JetBrains.Annotations;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 
-namespace IdentityServerExternalAuth.ExtensionGrant
+namespace Identity.API.IdentityServerExternalAuth
 {
     public class ExternalAuthenticationGrant<TUser> : IExtensionGrantValidator where TUser : IdentityUser, new()
     {
+
+        private readonly IIdentityIntegrationEventService _integrationService;
+
         [NotNull]
         private readonly UserManager<TUser> _userManager;
 
-        [NotNull]
-        private readonly IProviderRepository _providerRepository;
-
-        [NotNull]
-        private readonly INonEmailUserProcessor _nonEmailUserProcessor;
-
-        [NotNull]
-        private readonly IEmailUserProcessor _emailUserProcessor;
+        private readonly IOptions<AppSettings> _appSettings;
 
         // private readonly IGoogleAuthProvider _googleAuthProvider;
         //private readonly ILinkedInAuthProvider _linkedAuthProvider;
         // private readonly IGitHubAuthProvider _githubAuthProvider;
         public ExternalAuthenticationGrant(
             [NotNull] UserManager<TUser> userManager,
-            [NotNull] IProviderRepository providerRepository,
-            [NotNull] IFacebookAuthProvider facebookAuthProvider,
-            //  IGoogleAuthProvider googleAuthProvider,
-            [NotNull] ITwitterAuthProvider twitterAuthProvider,
-             //  ILinkedInAuthProvider linkeInAuthProvider,
-             //  IGitHubAuthProvider githubAuthProvider,
-            [NotNull] INonEmailUserProcessor nonEmailUserProcessor,
-            [NotNull] IEmailUserProcessor emailUserProcessor
-        ) {
+            [NotNull] IEnumerable<IExternalAuthProvider> providers, 
+            [NotNull] IIdentityIntegrationEventService integrationService, 
+            [NotNull] IOptions<AppSettings> appSettings,
+            [NotNull] ILoggerFactory loggerFactory
+            ) {
+            _logger = loggerFactory.CreateLogger< ExternalAuthenticationGrant<TUser>>();
             _userManager = userManager;
-            _providerRepository = providerRepository;
-            _nonEmailUserProcessor = nonEmailUserProcessor;
-            _emailUserProcessor = emailUserProcessor;
+            _integrationService = integrationService;
+            _appSettings = appSettings;
+
+            _providers = providers.ToDictionary(p => p.ProviderKey, StringComparer.OrdinalIgnoreCase);
 
 
-            _providers = new Dictionary<ProviderType, IExternalAuthProvider>
-            {
-                [ProviderType.Facebook] = facebookAuthProvider,
-                // [ProviderType.Google] = _googleAuthProvider,
-                [ProviderType.Twitter] = twitterAuthProvider,
-                //[ProviderType.LinkedIn] = _linkedAuthProvider
-            };
         }
 
 
-        private readonly Dictionary<ProviderType, IExternalAuthProvider> _providers;
+        private readonly Dictionary<string, IExternalAuthProvider> _providers;
+        private readonly ILogger<ExternalAuthenticationGrant<TUser>> _logger;
 
-        public string GrantType => "external";
+        //public string GrantType => "external";
 
 
-
-        public async Task ValidateAsync(ExtensionGrantValidationContext context)
-        {
+        async Task IExtensionGrantValidator.ValidateAsync(ExtensionGrantValidationContext context) {
             var provider = context.Request.Raw.Get("provider");
-            if (string.IsNullOrWhiteSpace(provider))
-            {
+            if (string.IsNullOrWhiteSpace(provider)) {
                 context.Result = new GrantValidationResult(TokenRequestErrors.InvalidRequest, "invalid provider");
                 return;
             }
 
+            //var userId = context.Request.Raw.Get("userId");
+            //if (string.IsNullOrWhiteSpace(userId)) {
+            //    context.Result = new GrantValidationResult(TokenRequestErrors.InvalidRequest, "invalid userId");
+            //    return;
+            //}
 
-            var token = context.Request.Raw.Get("external_token");
-            if (string.IsNullOrWhiteSpace(token))
-            {
+            //var applicationId = context.Request.Raw.Get("applicationId");
+            //if (string.IsNullOrWhiteSpace(applicationId)) {
+            //    context.Result = new GrantValidationResult(TokenRequestErrors.InvalidRequest, "invalid applicationId");
+            //    return;
+            //}
+
+
+            var token = context.Request.Raw.Get("token");
+            if (string.IsNullOrWhiteSpace(token)) {
                 context.Result = new GrantValidationResult(TokenRequestErrors.InvalidRequest, "invalid external token");
                 return;
             }
 
-            var requestEmail = context.Request.Raw.Get("email");
 
-            var providerType = (ProviderType)Enum.Parse(typeof(ProviderType), provider, true);
-
-            if (!Enum.IsDefined(typeof(ProviderType), providerType))
-            {
+            if (!_providers.ContainsKey(provider)) {
                 context.Result = new GrantValidationResult(TokenRequestErrors.InvalidRequest, "invalid provider");
                 return;
             }
 
-            var userInfo = _providers[providerType].GetUserInfo(token);
+            var userInfo = _providers[provider].GetUserInfo(token);
 
-            if (userInfo == null)
-            {
+            if (userInfo == null) {
                 context.Result = new GrantValidationResult(TokenRequestErrors.InvalidRequest, "couldn't retrieve user info from specified provider, please make sure that access token is not expired.");
                 return;
             }
 
             var externalId = userInfo.Value<string>("id");
-            if (!string.IsNullOrWhiteSpace(externalId))
-            {
+            if (string.IsNullOrWhiteSpace(externalId)) {
+                throw new InvalidOperationException($"Did not receive a Id from the provider ({provider})");
+            }
 
+            try {
                 var user = await _userManager.FindByLoginAsync(provider, externalId);
-                if (null != user)
-                {
-                    user = await _userManager.FindByIdAsync(user.Id);
-                    var userClaims = await _userManager.GetClaimsAsync(user);
-                    context.Result = new GrantValidationResult(user.Id, provider, userClaims, provider, null);
-                    return;
+                if (user == null) { // new user
+
+                    //TODO: validate accessToken is from ours 
+                    var email = context.Request.Raw.Get("email") ?? userInfo.Value<string>("email");
+                    var username = context.Request.Raw.Get("username") ?? userInfo.Value<string>("username") ?? email ?? externalId;
+                    user = new TUser {Email = email, UserName = username};
+                    var result = await _userManager.CreateAsync(user);
+                    if (!result.Succeeded) {
+                        throw new IdentityException("failed to create user", result.Errors);
+                    }
+
+                    result = await _userManager.AddLoginAsync(user, new UserLoginInfo(provider, externalId, provider));
+                    if (!result.Succeeded) {
+                        throw new IdentityException("failed add login", result.Errors);
+                    }
+
+                    user = await _userManager.FindByIdAsync(user?.Id) ?? throw new InvalidOperationException("Could not load newly created user");
+
                 }
+
+                var userClaims = await _userManager.GetClaimsAsync(user);
+                context.Result = new GrantValidationResult(user.Id, provider, userClaims, provider, null);
+                await _integrationService.AccessTokenReceived(user.Id, provider, _appSettings.Value.Authentication[provider]?.ApplicationId, externalId, token);
+
             }
 
-            if (string.IsNullOrWhiteSpace(requestEmail))
-            {
-                context.Result = await _nonEmailUserProcessor.ProcessAsync(userInfo, provider);
-                return;
+            catch (IdentityException e) {
+                _logger.LogWarning(e, "UserManager failed to do as expected in the custom token_exchange grant");
+                context.Result = new GrantValidationResult(TokenRequestErrors.InvalidRequest,
+                    "user could not be created, please try again",
+                    e.Errors.ToDictionary(p => p.Code, p => p.Description as object));
+
+            }
+            catch (Exception ex) {
+                _logger.LogError(ex, "unexpected error");
+                context.Result = new GrantValidationResult(TokenRequestErrors.InvalidRequest, "user could not be created, please try again");
             }
 
-            context.Result = await _emailUserProcessor.ProcessAsync(userInfo, requestEmail, provider);
-            return;
+            
         }
+
+        [NotNull]
+        string IExtensionGrantValidator.GrantType => ExternalAuthenticationGrant<TUser>.GrantType;
+
+
+        [NotNull]
+        public static string GrantType => "token_exchange";
     }
 }

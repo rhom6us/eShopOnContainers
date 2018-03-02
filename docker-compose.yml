@@ -2,6 +2,15 @@ version: '3.3'
 
 services:
 
+  useractions.api:
+    image: eshop/useractions.api:${TAG:-latest}
+    build:
+      context: .
+      dockerfile: src/Services/UserActions/UserActions.Api/Dockerfile
+    depends_on:
+      - nosql.data
+      - rabbitmq
+
   basket.api:
     image: eshop/basket.api:${TAG:-latest}
     build:
@@ -28,6 +37,7 @@ services:
       dockerfile: src/Services/Identity/Identity.API/Dockerfile    
     depends_on:
       - sql.data
+      - rabbitmq
 
   ordering.api:
     image: eshop/ordering.api:${TAG:-latest}
@@ -116,3 +126,4 @@ services:
       
   rabbitmq:
     image: rabbitmq:3-management-alpine
+

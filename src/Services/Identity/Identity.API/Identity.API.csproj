@@ -23,6 +23,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Remove="idsrv3test.pfx" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="AspNet.Security.OAuth.Foursquare" Version="2.0.0-rc2-final" />
     <PackageReference Include="AspNet.Security.OAuth.Instagram" Version="2.0.0-rc2-final" />
     <PackageReference Include="Autofac.Extensions.DependencyInjection" Version="4.2.1" />
@@ -41,6 +45,7 @@
     <PackageReference Include="Microsoft.Extensions.Configuration.UserSecrets" Version="2.0.0" />
     <PackageReference Include="Microsoft.Extensions.HealthChecks.AzureStorage" Version="1.0.0" />
     <PackageReference Include="Microsoft.Extensions.HealthChecks.SqlServer" Version="1.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="2.0.0" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="1.2.0" />
   </ItemGroup>
 
@@ -57,17 +62,41 @@
   </ItemGroup>
 
   <ItemGroup>
-    <EmbeddedResource Include="Certificate\idsrv3test.pfx" />
+    <ProjectReference Include="..\..\..\BuildingBlocks\EventBus\EventBusRabbitMQ\EventBusRabbitMQ.csproj" />
+    <ProjectReference Include="..\..\..\BuildingBlocks\EventBus\EventBusServiceBus\EventBusServiceBus.csproj" />
+    <ProjectReference Include="..\..\..\BuildingBlocks\EventBus\EventBus\EventBus.csproj" />
+    <ProjectReference Include="..\..\..\BuildingBlocks\WebHostCustomization\WebHost.Customization\WebHost.Customization.csproj" />
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\..\BuildingBlocks\WebHostCustomization\WebHost.Customization\WebHost.Customization.csproj" />
+    <Reference Include="Microsoft.Azure.ServiceBus">
+      <HintPath>..\..\..\..\..\..\..\Users\Thomas\.nuget\packages\microsoft.azure.servicebus\2.0.0\lib\netstandard2.0\Microsoft.Azure.ServiceBus.dll</HintPath>
+    </Reference>
   </ItemGroup>
 
   <ItemGroup>
     <None Update="Setup\*">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Update="Properties\Resources.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Update="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="IdentityServerExternalAuth\Repositories\" />
   </ItemGroup>
 
 </Project>

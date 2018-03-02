@@ -1,9 +1,12 @@
 using Newtonsoft.Json.Linq;
 
-namespace IdentityServerExternalAuth.Interfaces
+namespace Identity.API.IdentityServerExternalAuth.Providers
 {
-    public interface IExternalAuthProvider
+    public interface IExternalAuthProvider 
     {
+
         JObject GetUserInfo(string accessToken);
+
+        string ProviderKey { get; }
     }
 }

@@ -4,13 +4,14 @@ using System.Security.Claims;
 using System.Threading.Tasks;
 using Identity.API.Data;
 using Identity.API.Models.AccountViewModels;
+using Identity.API.Services;
+using JetBrains.Annotations;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.eShopOnContainers.Services.Identity.API.Services;
 using Microsoft.Extensions.Logging;
 using Microsoft.Net.Http.Headers;
 
@@ -41,7 +42,7 @@ namespace Identity.API.Controllers
         [HttpGet]
         //[MsalFilter]
         //[AllowAnonymous]
-        public async Task<IActionResult> Login(string returnUrl = null)
+        public async Task<IActionResult> Login([CanBeNull] string returnUrl = null)
         {
             // Clear the existing external cookie to ensure a clean login process
             await this.HttpContext.SignOutAsync(IdentityConstants.ExternalScheme);
@@ -72,7 +73,7 @@ namespace Identity.API.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Login(LoginViewModel model, string returnUrl = null)
+        public async Task<IActionResult> Login(LoginViewModel model, [CanBeNull] string returnUrl = null)
         {
             this.ViewData["ReturnUrl"] = returnUrl;
             if (this.ModelState.IsValid)
@@ -107,7 +108,7 @@ namespace Identity.API.Controllers
 
         [HttpGet]
         [AllowAnonymous]
-        public IActionResult Register(string returnUrl = null)
+        public IActionResult Register([CanBeNull] string returnUrl = null)
         {
             this.ViewData["ReturnUrl"] = returnUrl;
             return this.View();
@@ -116,7 +117,7 @@ namespace Identity.API.Controllers
         [HttpPost]
         [AllowAnonymous]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Register(RegisterViewModel model, string returnUrl = null)
+        public async Task<IActionResult> Register(RegisterViewModel model, [CanBeNull] string returnUrl = null)
         {
             this.ViewData["ReturnUrl"] = returnUrl;
             if (this.ModelState.IsValid)
@@ -154,17 +155,19 @@ namespace Identity.API.Controllers
         [HttpPost]
         [AllowAnonymous]
         [ValidateAntiForgeryToken]
-        public IActionResult ExternalLogin(string provider, string returnUrl = null)
+        public IActionResult ExternalLogin(string provider, [CanBeNull] string returnUrl = null)
         {
             // Request a redirect to the external login provider.
-            var redirectUrl = this.Url.Action(nameof(this.ExternalLoginCallback), "Account", new { ReturnUrl = returnUrl });
+            var redirectUrl = this.Url.Action(nameof(this.ExternalLoginCallback), "Account", new {
+                ReturnUrl = returnUrl
+            });
             var properties = _signInManager.ConfigureExternalAuthenticationProperties(provider, redirectUrl);
             return this.Challenge(properties, provider);
         }
 
         [HttpGet]
         [AllowAnonymous]
-        public async Task<IActionResult> ExternalLoginCallback(string returnUrl = null, string remoteError = null)
+        public async Task<IActionResult> ExternalLoginCallback([CanBeNull] string returnUrl = null, string remoteError = null)
         {
             if (remoteError != null)
             {
@@ -205,7 +208,7 @@ namespace Identity.API.Controllers
         [HttpPost]
         [AllowAnonymous]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> ExternalLoginConfirmation(ExternalLoginConfirmationViewModel model, string returnUrl = null)
+        public async Task<IActionResult> ExternalLoginConfirmation(ExternalLoginConfirmationViewModel model, [CanBeNull] string returnUrl = null)
         {
             if (this.ModelState.IsValid)
             {
@@ -235,7 +238,7 @@ namespace Identity.API.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> ConfirmEmail(string userId, string code)
+        public async Task<IActionResult> ConfirmEmail([CanBeNull] string userId, string code)
         {
             if (userId == null || code == null)
             {
@@ -289,7 +292,7 @@ namespace Identity.API.Controllers
         }
 
         [HttpGet]
-        public IActionResult ResetPassword(string code = null)
+        public IActionResult ResetPassword([CanBeNull] string code = null)
         {
             return code == null ? this.View("Error") : this.View();
         }
@@ -324,7 +327,7 @@ namespace Identity.API.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult> SendCode(string returnUrl = null, bool rememberMe = false)
+        public async Task<ActionResult> SendCode([CanBeNull] string returnUrl = null, bool rememberMe = false)
         {
             var user = await _signInManager.GetTwoFactorAuthenticationUserAsync();
             if (user == null)
@@ -372,7 +375,7 @@ namespace Identity.API.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> VerifyCode(string provider, bool rememberMe, string returnUrl = null)
+        public async Task<IActionResult> VerifyCode(string provider, bool rememberMe, [CanBeNull] string returnUrl = null)
         {
             // Require that the user has already logged in via username/password or external login
             var user = await _signInManager.GetTwoFactorAuthenticationUserAsync();

@@ -1,13 +1,15 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Identity.API.Configuration;
 using IdentityServer4.EntityFramework.DbContexts;
 using IdentityServer4.EntityFramework.Mappers;
-using Microsoft.eShopOnContainers.Services.Identity.API.Configuration;
+using IdentityServer4.EntityFramework.Options;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 
 namespace Identity.API.Data {
+
     public class ConfigurationDbContextSeed {
         public async Task SeedAsync(ConfigurationDbContext context, IConfiguration configuration) {
             //callbacks urls from config:
@@ -21,15 +23,17 @@ namespace Identity.API.Data {
                 {"OrderingApi", configuration.GetValue<string>("OrderingApiClient")}
             };
 
-            if (!await context.Clients.AnyAsync())
-                context.Clients.AddRange(Config.GetClients(clientUrls).Select(ClientMappers.ToEntity));
+                context.Clients.RemoveRange(context.Clients);
+            await context.Clients.AddRangeAsync(Config.GetClients(clientUrls).Select(ClientMappers.ToEntity));
 
-            if (!await context.IdentityResources.AnyAsync())
-                context.IdentityResources.AddRange(Config.GetResources().Select(IdentityResourceMappers.ToEntity));
+                context.IdentityResources.RemoveRange(context.IdentityResources);
+            await context.IdentityResources.AddRangeAsync(Config.GetResources().Select(IdentityResourceMappers.ToEntity));
 
-            if (!await context.ApiResources.AnyAsync())
-                context.ApiResources.AddRange(Config.GetApis().Select(ApiResourceMappers.ToEntity));
+                context.ApiResources.RemoveRange(context.ApiResources);
+            await context.ApiResources.AddRangeAsync(Config.GetApis().Select(ApiResourceMappers.ToEntity));
 
+            
+            
             await context.SaveChangesAsync();
         }
     }

@@ -9,7 +9,7 @@ using IdentityServer4.Models;
 using IdentityServer4.Services;
 using Microsoft.AspNetCore.Identity;
 
-namespace Microsoft.eShopOnContainers.Services.Identity.API.Services {
+namespace Identity.API.Services {
     public class ProfileService : IProfileService {
         public ProfileService(UserManager<ApplicationUser> userManager) {
             _userManager = userManager;

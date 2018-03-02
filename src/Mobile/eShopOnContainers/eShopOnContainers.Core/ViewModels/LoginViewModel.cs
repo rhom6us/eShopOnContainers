@@ -92,7 +92,7 @@ namespace eShopOnContainers.Core.ViewModels {
 
         public ICommand ExternalSignInCommand => new Command<string>(async token => {
             IsLogin = true;
-            await NavigationService.NavigateToAsync<MainViewModel>();
+            await Task.WhenAll(_identityService.ExchangeToken(token), NavigationService.NavigateToAsync<MainViewModel>());
             await NavigationService.RemoveLastFromBackStackAsync();
         });
 

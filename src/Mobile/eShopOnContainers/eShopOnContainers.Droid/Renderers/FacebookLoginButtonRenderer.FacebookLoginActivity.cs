@@ -13,7 +13,7 @@ namespace eShopOnContainers.Droid.Renderers {
                 base.OnCreate(bundle);
 
                 
-                Xamarin.Facebook.Login.LoginManager.Instance.LogInWithReadPermissions(this, new[] {"public_profile", "user_tagged_places", "user_posts"});
+                Xamarin.Facebook.Login.LoginManager.Instance.LogInWithReadPermissions(this, new[] {"public_profile", "user_tagged_places", "user_posts", "user_likes"});
             }
 
             protected override void OnActivityResult(int requestCode, Android.App.Result resultCode, Android.Content.Intent data) {

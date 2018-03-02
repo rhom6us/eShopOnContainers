@@ -58,13 +58,14 @@
                 .GetResult();
         }
 
-        public void SubscribeDynamic<TH>(string eventName)
+        public IEventBus SubscribeDynamic<TH>(string eventName)
             where TH : IDynamicIntegrationEventHandler
         {
             _subsManager.AddDynamicSubscription<TH>(eventName);
+            return this;
         }
 
-        public void Subscribe<T, TH>()
+        public IEventBus Subscribe<T, TH>()
             where T : IntegrationEvent
             where TH : IIntegrationEventHandler<T>
         {
@@ -88,9 +89,10 @@
             }
 
             _subsManager.AddSubscription<T, TH>();
+            return this;
         }
 
-        public void Unsubscribe<T, TH>()
+        public IEventBus Unsubscribe<T, TH>()
             where T : IntegrationEvent
             where TH : IIntegrationEventHandler<T>
         {
@@ -109,12 +111,14 @@
             }
 
             _subsManager.RemoveSubscription<T, TH>();
+            return this;
         }
 
-        public void UnsubscribeDynamic<TH>(string eventName)
+        public IEventBus UnsubscribeDynamic<TH>(string eventName)
             where TH : IDynamicIntegrationEventHandler
         {
             _subsManager.RemoveDynamicSubscription<TH>(eventName);
+            return this;
         }
 
         public void Dispose()

@@ -1,12 +1,13 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using IdentityServer4.Models;
+using JetBrains.Annotations;
 
 namespace Identity.API.Models.AccountViewModels
 {
     public class ConsentViewModel : ConsentInputModel
     {
-        public ConsentViewModel(ConsentInputModel model, string returnUrl, AuthorizationRequest request, Client client, Resources resources)
+        public ConsentViewModel([CanBeNull] ConsentInputModel model, string returnUrl, AuthorizationRequest request, Client client, Resources resources)
         {
             this.RememberConsent = model?.RememberConsent ?? true;
             this.ScopesConsented = model?.ScopesConsented ?? Enumerable.Empty<string>();

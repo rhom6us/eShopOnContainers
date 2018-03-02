@@ -1,9 +1,9 @@
 ﻿using System.Threading.Tasks;
 using Identity.API.Models;
+using Identity.API.Services;
 using IdentityServer4.Services;
+using JetBrains.Annotations;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.eShopOnContainers.Services.Identity.API;
-using Microsoft.eShopOnContainers.Services.Identity.API.Services;
 using Microsoft.Extensions.Options;
 
 namespace Identity.API.Controllers
@@ -26,7 +26,7 @@ namespace Identity.API.Controllers
             return this.View();
         }
 
-        public IActionResult ReturnToOriginalApplication(string returnUrl)
+        public IActionResult ReturnToOriginalApplication([CanBeNull] string returnUrl)
         {
             if (returnUrl != null)
                 return this.Redirect(_redirectSvc.ExtractRedirectUriFromReturnUrl(returnUrl));

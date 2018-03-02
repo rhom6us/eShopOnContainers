@@ -2,38 +2,25 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
-using IdentityServerExternalAuth.Entities;
-using IdentityServerExternalAuth.Helpers;
-using IdentityServerExternalAuth.Interfaces;
-using IdentityServerExternalAuth.Repositories.Interfaces;
-using Microsoft.AspNetCore.Identity;
+using JetBrains.Annotations;
 using Newtonsoft.Json.Linq;
 
-namespace IdentityServerExternalAuth.Providers
-{
-    public class FacebookAuthProvider<TUser> : IFacebookAuthProvider where TUser : IdentityUser, new()
-    {
+namespace Identity.API.IdentityServerExternalAuth.Providers {
+    public class FacebookAuthProvider : ExternalAuthProvider {
+        [NotNull]
+        protected override string ProviderKey => "facebook";
 
-        private readonly IProviderRepository _providerRepository;
-        private readonly HttpClient _httpClient;
         public FacebookAuthProvider(
             IProviderRepository providerRepository,
             HttpClient httpClient
-        )
-        {
-            _providerRepository = providerRepository;
+        ) : base(providerRepository) {
             _httpClient = httpClient;
         }
 
-        public Provider Provider => _providerRepository.Get()
-            .FirstOrDefault(x => string.Equals(x.Name, ProviderType.Facebook.ToString(), StringComparison.CurrentCultureIgnoreCase));
 
-        public JObject GetUserInfo(string accessToken)
-        {
-            if (this.Provider == null)
-            {
-                throw new ArgumentNullException(nameof(this.Provider));
-            }
+        public override JObject GetUserInfo(string accessToken) {
+            if (this.LoginProvider == null)
+                throw new ArgumentNullException(nameof(this.LoginProvider));
 
             var request = new Dictionary<string, string> {
                 ["fields"] = "id,email,name,gender,birthday",
@@ -41,13 +28,20 @@ namespace IdentityServerExternalAuth.Providers
             };
 
 
-            var result = _httpClient.GetAsync(this.Provider.UserInfoEndPoint + QueryBuilder.GetQuery(request, ProviderType.Facebook)).Result;
-            if (result.IsSuccessStatusCode)
-            {
+            var result = _httpClient.GetAsync(this.LoginProvider.UserInfoEndPoint + BuildQuery(request)).Result;
+            if (result.IsSuccessStatusCode) {
                 var infoObject = JObject.Parse(result.Content.ReadAsStringAsync().Result);
                 return infoObject;
             }
+
             return null;
         }
+
+        [NotNull]
+        protected override string BuildQuery(Dictionary<string, string> values) {
+            return $"?fields={values["fields"]}&access_token={values["access_token"]}";
+        }
+
+        private readonly HttpClient _httpClient;
     }
 }

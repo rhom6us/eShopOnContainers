@@ -14,6 +14,7 @@ using System;
 using System.Net.Sockets;
 using System.Text;
 using System.Threading.Tasks;
+using JetBrains.Annotations;
 
 namespace Microsoft.eShopOnContainers.BuildingBlocks.EventBusRabbitMQ
 {
@@ -32,8 +33,11 @@ namespace Microsoft.eShopOnContainers.BuildingBlocks.EventBusRabbitMQ
         private string _queueName;
 
         public EventBusRabbitMQ(IRabbitMQPersistentConnection persistentConnection, ILogger<EventBusRabbitMQ> logger,
-            ILifetimeScope autofac, IEventBusSubscriptionsManager subsManager, string queueName = null, int retryCount = 5)
+            ILifetimeScope autofac, [CanBeNull] IEventBusSubscriptionsManager subsManager, string queueName, int retryCount = 5)
         {
+            if (string.IsNullOrEmpty(queueName))
+                throw new ArgumentException("Value cannot be null or empty.", nameof(queueName));
+
             _persistentConnection = persistentConnection ?? throw new ArgumentNullException(nameof(persistentConnection));
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
             _subsManager = subsManager ?? new InMemoryEventBusSubscriptionsManager();
@@ -104,20 +108,24 @@ namespace Microsoft.eShopOnContainers.BuildingBlocks.EventBusRabbitMQ
             }
         }
 
-        public void SubscribeDynamic<TH>(string eventName)
+        [NotNull]
+        public IEventBus SubscribeDynamic<TH>(string eventName)
             where TH : IDynamicIntegrationEventHandler
         {
             DoInternalSubscription(eventName);
             _subsManager.AddDynamicSubscription<TH>(eventName);
+            return this;
         }
 
-        public void Subscribe<T, TH>()
-            where T : IntegrationEvent
-            where TH : IIntegrationEventHandler<T>
+        [NotNull]
+        public IEventBus Subscribe<TEvent, THandler>()
+            where TEvent : IntegrationEvent
+            where THandler : IIntegrationEventHandler<TEvent>
         {
-            var eventName = _subsManager.GetEventKey<T>();
+            var eventName = _subsManager.GetEventKey<TEvent>();
             DoInternalSubscription(eventName);
-            _subsManager.AddSubscription<T, TH>();
+            _subsManager.AddSubscription<TEvent, THandler>();
+            return this;
         }
 
         private void DoInternalSubscription(string eventName)
@@ -139,29 +147,31 @@ namespace Microsoft.eShopOnContainers.BuildingBlocks.EventBusRabbitMQ
             }
         }
 
-        public void Unsubscribe<T, TH>()
+        [NotNull]
+        public IEventBus Unsubscribe<T, TH>()
             where TH : IIntegrationEventHandler<T>
             where T : IntegrationEvent
         {
             _subsManager.RemoveSubscription<T, TH>();
+            return this;
         }
 
-        public void UnsubscribeDynamic<TH>(string eventName)
+        [NotNull]
+        public IEventBus UnsubscribeDynamic<TH>(string eventName)
             where TH : IDynamicIntegrationEventHandler
         {
             _subsManager.RemoveDynamicSubscription<TH>(eventName);
+            return this;
         }
 
         public void Dispose()
         {
-            if (_consumerChannel != null)
-            {
-                _consumerChannel.Dispose();
-            }
+            _consumerChannel?.Dispose();
 
             _subsManager.Clear();
         }
 
+        [NotNull]
         private IModel CreateConsumerChannel()
         {
             if (!_persistentConnection.IsConnected)
@@ -226,7 +236,7 @@ namespace Microsoft.eShopOnContainers.BuildingBlocks.EventBusRabbitMQ
                             var integrationEvent = JsonConvert.DeserializeObject(message, eventType);
                             var handler = scope.ResolveOptional(subscription.HandlerType);
                             var concreteType = typeof(IIntegrationEventHandler<>).MakeGenericType(eventType);
-                            await (Task)concreteType.GetMethod("Handle").Invoke(handler, new object[] { integrationEvent });
+                            await (Task)concreteType.GetMethod("Handle").Invoke(handler, new[] { integrationEvent });
                         }
                     }
                 }

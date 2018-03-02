@@ -5,10 +5,10 @@ using System.IO.Compression;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using Identity.API.Extensions;
+using JetBrains.Annotations;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.eShopOnContainers.Services.Identity.API;
-using Microsoft.eShopOnContainers.Services.Identity.API.Extensions;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 
@@ -88,6 +88,7 @@ namespace Identity.API.Data {
             return users;
         }
 
+        [NotNull]
         private ApplicationUser CreateApplicationUser(string[] column, string[] headers) {
             if (column.Count() != headers.Count())
                 throw new Exception($"column count '{column.Count()}' not the same as headers count'{headers.Count()}'");
@@ -124,6 +125,7 @@ namespace Identity.API.Data {
             return user;
         }
 
+        [NotNull]
         private IEnumerable<ApplicationUser> GetDefaultUser() {
             var user = new ApplicationUser {
                 CardHolderName = "DemoUser",
@@ -152,6 +154,7 @@ namespace Identity.API.Data {
             return new List<ApplicationUser> {user};
         }
 
+        [NotNull]
         private static string[] GetHeaders(string[] requiredHeaders, string csvfile) {
             var csvheaders = File.ReadLines(csvfile).First().ToLowerInvariant().Split(',');
 

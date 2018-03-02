@@ -4,6 +4,7 @@ using Identity.API.Models.AccountViewModels;
 using IdentityServer4.Models;
 using IdentityServer4.Services;
 using IdentityServer4.Stores;
+using JetBrains.Annotations;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 
@@ -106,7 +107,7 @@ namespace Identity.API.Controllers
             return this.View("Error");
         }
 
-        async Task<ConsentViewModel> BuildViewModelAsync(string returnUrl, ConsentInputModel model = null)
+        async Task<ConsentViewModel> BuildViewModelAsync(string returnUrl, [CanBeNull] ConsentInputModel model = null)
         {
             var request = await _interaction.GetAuthorizationContextAsync(returnUrl);
             if (request != null)

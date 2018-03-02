@@ -59,16 +59,16 @@
 
         private void UpdateEndpoint(string baseEndpoint)
         {
-            RegisterWebsite = $"{baseEndpoint}:5105/Account/Register";
+            RegisterWebsite = $"https://abeb159c.ngrok.io/Account/Register";
             CatalogEndpoint = $"{baseEndpoint}:5101";
             OrdersEndpoint = $"{baseEndpoint}:5102";
             BasketEndpoint = $"{baseEndpoint}:5103";
-            IdentityEndpoint = $"{baseEndpoint}:5105/connect/authorize";
-            UserInfoEndpoint = $"{baseEndpoint}:5105/connect/userinfo";
-            TokenEndpoint = $"{baseEndpoint}:5105/connect/token";
-            LogoutEndpoint = $"{baseEndpoint}:5105/connect/endsession";
-            IdentityCallback = $"{baseEndpoint}:5105/xamarincallback";
-            LogoutCallback = $"{baseEndpoint}:5105/Account/Redirecting";
+            IdentityEndpoint = $"https://abeb159c.ngrok.io/connect/authorize";
+            UserInfoEndpoint = $"https://abeb159c.ngrok.io/connect/userinfo";
+            TokenEndpoint = $"https://abeb159c.ngrok.io/connect/token";
+            LogoutEndpoint = $"https://abeb159c.ngrok.io/connect/endsession";
+            IdentityCallback = $"https://abeb159c.ngrok.io/xamarincallback";
+            LogoutCallback = $"https://abeb159c.ngrok.io/Account/Redirecting";
             LocationEndpoint = $"{baseEndpoint}:5109";
             MarketingEndpoint = $"{baseEndpoint}:5110";
         }

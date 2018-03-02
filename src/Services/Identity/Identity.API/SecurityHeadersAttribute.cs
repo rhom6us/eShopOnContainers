@@ -1,7 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 
-namespace IdentityServer4.Quickstart.UI {
+namespace Identity.API {
     public class SecurityHeadersAttribute : ActionFilterAttribute
     {
         public override void OnResultExecuting(ResultExecutingContext context)
